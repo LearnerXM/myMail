@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.JudeCodes</groupId>
+    <artifactId>mail-check</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>mail-check</name>
+    <description>mail-check</description>
+    <parent>
+        <groupId>com.JudeCodes</groupId>
+        <artifactId>myMail</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <properties>
+<!--        注意这里的名字-->
+        <application.name>mail-check</application.name>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-job</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-rpc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-config</artifactId>
+        </dependency>
+
+
+    </dependencies>
+
+</project>

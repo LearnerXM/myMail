@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.JudeCodes</groupId>
+    <artifactId>mail-trade</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>mail-trade</name>
+    <description>mail-trade</description>
+    <parent>
+        <groupId>com.JudeCodes</groupId>
+        <artifactId>myMail</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <properties>
+        <application.name>mail-trade</application.name>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-base</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-config</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-rpc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-cache</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-mq</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-order-client</artifactId>
+        </dependency>
+
+
+        <!--  TEST  -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.200</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

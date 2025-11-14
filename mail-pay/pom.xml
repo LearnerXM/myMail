@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.JudeCodes</groupId>
+    <artifactId>mail-pay</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>mail-pay</name>
+    <description>mail-pay</description>
+    <parent>
+        <groupId>com.JudeCodes</groupId>
+        <artifactId>myMail</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <properties>
+        <application.name>mail-pay</application.name>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-api</artifactId>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-datasource</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-base</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-limiter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-config</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-rpc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-job</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-seata</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-lock</artifactId>
+        </dependency>
+
+        <!--    TTL    -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>transmittable-thread-local</artifactId>
+            <version>2.14.4</version>
+        </dependency>
+
+        <!--  IJPay  -->
+
+        <dependency>
+            <groupId>com.github.javen205</groupId>
+            <artifactId>IJPay-WxPay</artifactId>
+            <version>2.9.9</version>
+        </dependency>
+
+        <!--   commonCSV     -->
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.14.0</version>
+        </dependency>
+
+        <!--  TEST  -->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.200</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>

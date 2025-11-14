@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.JudeCodes</groupId>
+    <artifactId>mail-order</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>mail-order</name>
+    <description>mail-order</description>
+    <parent>
+        <groupId>com.JudeCodes</groupId>
+        <artifactId>myMail</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <properties>
+        <application.name>mail-order</application.name>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-api</artifactId>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-datasource</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-order-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-rpc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-lock</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-job</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-mq</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-seata</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-tcc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-config</artifactId>
+        </dependency>
+
+        <!--    shardingsphere和2.2不兼容，需要使用1.33，但是1.33和springboot 3.2.2 不兼容，所以自定义了 TagInspector和 UnTrustedTagInspector  -->
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.33</version>
+        </dependency>
+
+        <!--    TEST    -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
