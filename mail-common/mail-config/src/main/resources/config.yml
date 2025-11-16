@@ -1,0 +1,9 @@
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${my.mail.nacos.server.url}
+      config:
+        server-addr: ${my.mail.nacos.server.url}
+        namespace: properties
+        group: ${spring.application.name}

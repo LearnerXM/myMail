@@ -61,5 +61,18 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Spring Boot 自动配置基础 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+
+        <!-- 配置提示（可选，但建议保留） -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
     </dependencies>
 </project>

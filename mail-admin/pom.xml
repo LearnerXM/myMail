@@ -66,7 +66,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>cn.hollis.nft.turbo.admin.NfTurboAdminApplication</mainClass>
+                    <mainClass>cn.hollis.my.mail.admin.NfTurboAdminApplication</mainClass>
                 </configuration>
 
                 <executions>
