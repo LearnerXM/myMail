@@ -5,7 +5,7 @@ my:
       server:
         url: 192.168.0.1:8848 # my.mail.nacos.server.url - Nacos 的地址+端口号 #首次启动前务必修改成你自己的
     mysql:
-      url: jdbc:mysql://192.168.0.1:3306/nfturbo # my.mail.mysql.url - MySQL 的地址+数据库配置 #首次启动前务必修改成你自己的
+      url: jdbc:mysql://192.168.0.1:3306/my_mail # my.mail.mysql.url - MySQL 的地址+数据库配置 #首次启动前务必修改成你自己的
       username: root # my.mail.mysql.username - MySQL 的用户名 #首次启动前务必修改成你自己的
       password: 'root' # my.mail.mysql.password - MySQL 的密码 #首次启动前务必修改成你自己的
     redis:

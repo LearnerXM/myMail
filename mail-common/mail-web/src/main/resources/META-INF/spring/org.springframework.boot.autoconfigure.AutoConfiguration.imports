@@ -1,1 +1,2 @@
 com.judecodes.mail.web.WebAutoConfiguration
+com.judecodes.mailweb.config.OpenApiConfig

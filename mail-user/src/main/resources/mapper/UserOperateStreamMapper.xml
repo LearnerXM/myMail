@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.judecodes.mailuser.infrastructure.UserOperateStreamMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.judecodes.mailuser.domin.UserOperateStream">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="type" property="type" />
+        <result column="operate_time" property="operateTime" />
+        <result column="param" property="param" />
+        <result column="extend_info" property="extendInfo" />
+        <result column="deleted" property="deleted" />
+        <result column="lock_version" property="lockVersion" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, create_create, update_modified, user_id, type, operate_time, param, extend_info, deleted, lock_version
+    </sql>
+
+</mapper>
