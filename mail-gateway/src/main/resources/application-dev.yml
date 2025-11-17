@@ -1,0 +1,61 @@
+server:
+  port: 8081
+
+spring:
+  config:
+    import: classpath:base.yml,classpath:cache.yml,classpath:config.yml
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin, RETAIN_UNIQUE
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedHeaders: '*'
+            allowedMethods: '*'
+            allowedOrigins: '*'
+      routes:
+        # 示例：转发到 mail-admin 服务
+        - id: mail-admin
+          uri: lb://mail-admin          # Nacos 里的服务名
+          predicates:
+            - Path=/admin/**            # 请求路径
+          filters:
+            - StripPrefix=1
+        - id: mail-auth
+          uri: lb://mail-auth          # Nacos 里的服务名
+          predicates:
+            - Path=/auth/**            # 请求路径
+          filters:
+            - StripPrefix=1
+        - id: mail-user
+          uri: lb://mail-user          # Nacos 里的服务名
+          predicates:
+            - Path=/user/**            # 请求路径
+          filters:
+            - StripPrefix=1             # 去掉 /admin 前缀
+        - id: mail-goods
+          uri: lb://mail-goods
+          predicates:
+            - Path=/goods/**            # 请求路径
+          filters:
+            - StripPrefix=1
+        - id: mail-order
+          uri: lb://mail-order          # Nacos 里的服务名
+          predicates:
+            - Path=/order/**            # 请求路径
+          filters:
+            - StripPrefix=1
+        - id: mail-trade
+          uri: lb://mail-trade          # Nacos 里的服务名
+          predicates:
+            - Path=/trade/**            # 请求路径
+          filters:
+            - StripPrefix=1
+        - id: mail-pay
+          uri: lb://mail-pay          # Nacos 里的服务名
+          predicates:
+            - Path=/pay/**            # 请求路径
+          filters:
+            - StripPrefix=1
+

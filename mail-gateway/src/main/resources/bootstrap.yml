@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: mail-gateway
+
+  profiles:
+    active: dev
+
+  config:
+    import: classpath:base.yml,classpath:config.yml
