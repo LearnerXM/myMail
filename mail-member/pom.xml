@@ -3,10 +3,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.JudeCodes</groupId>
-    <artifactId>mail-user</artifactId>
+    <artifactId>mail-member</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>mail-user</name>
-    <description>mail-user</description>
+    <name>mail-member</name>
+    <description>mail-member</description>
     <parent>
         <groupId>com.JudeCodes</groupId>
         <artifactId>myMail</artifactId>
@@ -14,7 +14,7 @@
     </parent>
 
     <properties>
-        <application.name>mail-user</application.name>
+        <application.name>mail-member</application.name>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -29,6 +29,10 @@
         <dependency>
             <groupId>com.JudeCodes</groupId>
             <artifactId>mail-base</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-limiter</artifactId>
         </dependency>
 
         <dependency>
@@ -114,47 +118,15 @@
         </dependency>
 
     </dependencies>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <source>21</source>
-                    <target>21</target>
-                    <encoding>UTF-8</encoding>
-                    <compilerArgs>--enable-preview</compilerArgs>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring-boot.version}</version>
                 <configuration>
-                    <mainClass>com.judecodes.mailuser.MailUserApplication</mainClass>
                     <skip>true</skip>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>repackage</id>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

@@ -50,18 +50,8 @@
             <artifactId>httpcore</artifactId>
         </dependency>
 
-        <!--    sensitive    -->
-        <dependency>
-            <groupId>com.github.houbb</groupId>
-            <artifactId>sensitive-logback</artifactId>
-            <version>1.7.0</version>
-        </dependency>
 
-        <dependency>
-            <groupId>com.github.houbb</groupId>
-            <artifactId>sensitive-core</artifactId>
-            <version>1.7.0</version>
-        </dependency>
+
 
         <!--    spring-web    -->
         <dependency>

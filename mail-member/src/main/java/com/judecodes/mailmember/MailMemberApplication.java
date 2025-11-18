@@ -1,13 +1,13 @@
-package com.judecodes.mailapi;
+package com.judecodes.mailmember;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MailApiApplication {
+public class MailMemberApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(MailApiApplication.class, args);
+        SpringApplication.run(MailMemberApplication.class, args);
     }
 
 }

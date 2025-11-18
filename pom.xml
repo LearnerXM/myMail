@@ -38,7 +38,7 @@
         <module>mail-inventory</module>
         <module>mail-order</module>
         <module>mail-pay</module>
-        <module>mail-user</module>
+        <module>mail-member</module>
         <module>mail-trade</module>
     </modules>
 
@@ -231,7 +231,7 @@
             </dependency>
             <dependency>
                 <groupId>com.JudeCodes</groupId>
-                <artifactId>mail-user</artifactId>
+                <artifactId>mail-member</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

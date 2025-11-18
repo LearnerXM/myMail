@@ -3,13 +3,13 @@ my:
   mail:
     nacos:
       server:
-        url: 192.168.0.1:8848 # my.mail.nacos.server.url - Nacos 的地址+端口号 #首次启动前务必修改成你自己的
+        url: 127.0.0.1:8848 # my.mail.nacos.server.url - Nacos 的地址+端口号 #首次启动前务必修改成你自己的
     mysql:
-      url: jdbc:mysql://192.168.0.1:3306/my_mail # my.mail.mysql.url - MySQL 的地址+数据库配置 #首次启动前务必修改成你自己的
+      url: jdbc:mysql://127.0.0.1:3306/mail # my.mail.mysql.url - MySQL 的地址+数据库配置 #首次启动前务必修改成你自己的
       username: root # my.mail.mysql.username - MySQL 的用户名 #首次启动前务必修改成你自己的
-      password: 'root' # my.mail.mysql.password - MySQL 的密码 #首次启动前务必修改成你自己的
+      password: '123456' # my.mail.mysql.password - MySQL 的密码 #首次启动前务必修改成你自己的
     redis:
-      url: 192.168.0.1  # my.mail.redis.url - Redis 的地址 #首次启动前务必修改成你自己的
+      url: 127.0.0.1  # my.mail.redis.url - Redis 的地址 #首次启动前务必修改成你自己的
       port: 6379  # my.mail.redis.port - Redis 的端口号 #首次启动前务必修改成你自己的
       password: 'redis' # my.mail.redis.password - Redis 的密码 #首次启动前务必修改成你自己的
 #    elasticsearch:
@@ -30,8 +30,8 @@ my:
 #      url: 192.168.0.1:9876 # my.mail.rocketmq.url - RocketMQ 的地址+端口号 # 如果你要用RocketMQ，这里需要改成你自己的
     dubbo:
       nacos:
-        namespace: aa1c1c78-52b1-4ea7-b8fb-c50075b2f26d  # my.mail.dubbo.nacos.namespace - 自己到nacos上创建一个给dubbo用的namespce，然后和这里保持一致，首次启动前务必修改成你自己的 #首次启动前务必修改成你自己的
-        group: dubbo1  # my.mail.dubbo.nacos.group - 自己到nacos上创建一个给dubbo用的 group，然后和这里保持一致，首次启动前务必修改成你自己的 #首次启动前务必修改成你自己的
+        namespace: c3776141-8b14-4f6c-afb0-eb45222bdbb3  # my.mail.dubbo.nacos.namespace - 自己到nacos上创建一个给dubbo用的namespce，然后和这里保持一致，首次启动前务必修改成你自己的 #首次启动前务必修改成你自己的
+        group: dubbo  # my.mail.dubbo.nacos.group - 自己到nacos上创建一个给dubbo用的 group，然后和这里保持一致，首次启动前务必修改成你自己的 #首次启动前务必修改成你自己的
 #    seata:
 #      nacos:
 #        data-id: seataServer.properties # my.mail.seata.nacos.data-id - Seata 对应的Nacos 保存配置的 data-id #首次启动前务必修改成你自己的

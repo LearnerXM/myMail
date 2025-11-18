@@ -1,4 +1,4 @@
-package com.judecodes.mailuser;
+package com.judecodes.mailmember;
 
 
 import org.junit.Test;
