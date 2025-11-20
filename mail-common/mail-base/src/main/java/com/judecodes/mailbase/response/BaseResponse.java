@@ -2,6 +2,7 @@ package com.judecodes.mailbase.response;
 
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @Data
@@ -12,7 +13,7 @@ public class BaseResponse implements Serializable {
     private String responseCode;
 
     private String responseMessage;
-
+    @Serial
     private static final long serialVersionUID = 1L;
 
 }

@@ -3,7 +3,7 @@ package com.judecodes.mailweb.vo;
 import com.judecodes.mailbase.response.PageResponse;
 import lombok.Data;
 
-import java.io.Serializable;
+
 import java.util.List;
 
 import static com.judecodes.mailbase.response.ResponseCode.SUCCESS;
