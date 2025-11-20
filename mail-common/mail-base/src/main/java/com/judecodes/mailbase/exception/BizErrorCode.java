@@ -22,6 +22,12 @@ public enum BizErrorCode implements ErrorCode {
     NOTICE_SAVE_FAILED("NOTICE_SAVE_FAILED", "通知保存失败"),
 
     /**
+     * 手机号检验失败
+     */
+    PHONE_VALIDATION_FAILED("NOTICE_SAVE_FAILED", "手机号检验失败"),
+
+
+    /**
      * 状态机转换失败
      */
     STATE_MACHINE_TRANSITION_FAILED("STATE_MACHINE_TRANSITION_FAILED", "状态机转换失败"),
@@ -42,10 +48,10 @@ public enum BizErrorCode implements ErrorCode {
     REMOTE_CALL_RESPONSE_IS_FAILED("REMOTE_CALL_RESPONSE_IS_FAILED", "远程调用返回结果失败");
 
 
-    private String code;
+    private final String  code;
 
 
-    private String message;
+    private final String  message;
 
     BizErrorCode(String code, String message) {
         this.code = code;

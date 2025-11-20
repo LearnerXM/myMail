@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 // 按你自己的规范改，这里示例：扫描所有 mapper 包
-@MapperScan("com.judecodes.**.mapper")
+@MapperScan("com.judecodes.*.infrastructure.mapper")
 public class MybatisPlusConfig {
 
     /**

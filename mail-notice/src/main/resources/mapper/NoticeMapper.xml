@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.judecodes.mailnotice.infrastructure.mapper.NoticeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.judecodes.mailnotice.domain.entity.Notice">
+        <id column="id" property="id" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="notice_title" property="noticeTitle" />
+        <result column="notice_content" property="noticeContent" />
+        <result column="notice_type" property="noticeType" />
+        <result column="send_success_time" property="sendSuccessTime" />
+        <result column="target_address" property="targetAddress" />
+        <result column="state" property="state" />
+        <result column="deleted" property="deleted" />
+        <result column="lock_version" property="lockVersion" />
+        <result column="retry_times" property="retryTimes" />
+        <result column="extend_info" property="extendInfo" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, create_create, update_modified, notice_title, notice_content, notice_type, send_success_time, target_address, state, deleted, lock_version, retry_times, extend_info
+    </sql>
+
+</mapper>
