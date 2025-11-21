@@ -1,5 +1,7 @@
 package com.judecodes.mailnotice.domain.service.impl;
 
+import com.judecodes.mailbase.exception.BizErrorCode;
+import com.judecodes.mailbase.exception.BizException;
 import com.judecodes.mailnotice.constant.NoticeState;
 import com.judecodes.mailnotice.constant.NoticeType;
 import com.judecodes.mailnotice.domain.entity.Notice;
@@ -19,15 +21,23 @@ import org.springframework.stereotype.Service;
 @Service
 public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> implements NoticeService {
 
+
+    private static final String SMS_NOTICE_TITLE = "验证码";
+
+
     @Override
     public Notice saveCode(String phone, String code) {
         Notice notice = Notice.builder()
+                .noticeTitle(SMS_NOTICE_TITLE)
                 .noticeContent(code)
                 .targetAddress(phone)
                 .state(NoticeState.INIT.name())
                 .noticeType(NoticeType.SMS.name())
                 .build();
-        save(notice);
+        boolean result = save(notice);
+        if (!result) {
+            throw new BizException(BizErrorCode.NOTICE_SAVE_FAILED);
+        }
         return notice;
     }
 }

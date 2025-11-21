@@ -8,7 +8,7 @@ import com.judecodes.mailbase.exception.ErrorCode;
  *
  * @author hollis
  */
-public enum UserErrorCode implements ErrorCode {
+public enum MemberErrorCode implements ErrorCode {
     /**
      * 重复电话号码
      */
@@ -27,7 +27,7 @@ public enum UserErrorCode implements ErrorCode {
     /**
      * 用户操作失败
      */
-    USER_OPERATE_FAILED("USER_OPERATE_FAILED", "用户操作失败"),
+    USER_OPERATE_FAILED("USER_OPERATE_FAILED", "数据库操作异常，用户注册失败"),
 
     /**
      * 用户密码校验失败
@@ -55,7 +55,7 @@ public enum UserErrorCode implements ErrorCode {
 
     private final String message;
 
-    UserErrorCode(String code, String message) {
+    MemberErrorCode(String code, String message) {
         this.code = code;
         this.message = message;
     }

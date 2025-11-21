@@ -5,13 +5,12 @@ import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 // 按你自己的规范改，这里示例：扫描所有 mapper 包
-@MapperScan("com.judecodes.*.infrastructure.mapper")
+//@MapperScan("com.judecodes.*.infrastructure.mapper")
 public class MybatisPlusConfig {
 
     /**

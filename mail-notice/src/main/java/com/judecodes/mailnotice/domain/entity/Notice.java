@@ -19,8 +19,9 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Setter
-@ToString
 @Builder
+@AllArgsConstructor  // 这个很关键
+@NoArgsConstructor
 @TableName("ums_notice")
 public class Notice extends BaseEntity {
 

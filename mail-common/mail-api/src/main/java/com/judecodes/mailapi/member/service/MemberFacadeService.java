@@ -1,14 +1,16 @@
 package com.judecodes.mailapi.member.service;
 
-import com.judecodes.mailapi.member.request.LoginRequest;
-import com.judecodes.mailapi.member.request.SmsLoginRequest;
-import com.judecodes.mailapi.member.request.SmsRegisterRequest;
-import com.judecodes.mailapi.member.response.MemberVOResponse;
+
+import com.judecodes.mailapi.member.request.MemberQueryRequest;
+
+import com.judecodes.mailapi.member.response.MemberOperatorResponse;
+import com.judecodes.mailapi.member.response.MemberQueryResponse;
+import com.judecodes.mailapi.member.response.data.MemberInfo;
 
 public interface MemberFacadeService {
-     MemberVOResponse login(LoginRequest loginRequest);
 
-     MemberVOResponse smsLogin(SmsLoginRequest smsLoginRequest);
 
-     MemberVOResponse smsRegister(SmsRegisterRequest smsRegisterRequest);
+     MemberQueryResponse<MemberInfo> query(MemberQueryRequest memberQueryRequest);
+
+     MemberOperatorResponse smsRegister(String phone);
 }

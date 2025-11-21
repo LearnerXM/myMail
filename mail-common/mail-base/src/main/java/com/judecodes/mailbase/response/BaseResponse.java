@@ -2,6 +2,7 @@ package com.judecodes.mailbase.response;
 
 import lombok.Data;
 
+
 import java.io.Serial;
 import java.io.Serializable;
 

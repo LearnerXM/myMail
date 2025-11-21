@@ -1,32 +1,38 @@
 package com.judecodes.mailmember.domain.service.impl;
 
 
-import cn.hutool.core.lang.Assert;
+import com.alicp.jetcache.Cache;
+import com.alicp.jetcache.CacheManager;
+import com.alicp.jetcache.anno.CacheRefresh;
+import com.alicp.jetcache.anno.CacheType;
+import com.alicp.jetcache.anno.Cached;
+import com.alicp.jetcache.template.QuickConfig;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.judecodes.mailapi.member.constant.GenderEnum;
 import com.judecodes.mailapi.member.constant.MemberStateEnum;
-import com.judecodes.mailapi.member.request.LoginRequest;
-import com.judecodes.mailapi.member.request.SmsLoginRequest;
-import com.judecodes.mailapi.member.request.SmsRegisterRequest;
-import com.judecodes.mailapi.member.response.MemberVOResponse;
+import com.judecodes.mailapi.member.response.MemberOperatorResponse;
 
 import com.judecodes.mailmember.domain.entity.Member;
 
 import com.judecodes.mailmember.domain.service.MemberService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.judecodes.mailmember.infrastructure.exception.UserErrorCode;
-import com.judecodes.mailmember.infrastructure.exception.UserException;
+import com.judecodes.mailmember.infrastructure.exception.MemberErrorCode;
+import com.judecodes.mailmember.infrastructure.exception.MemberException;
 import com.judecodes.mailmember.infrastructure.mapper.MemberMapper;
 import com.judecodes.mailmember.infrastructure.util.PasswordUtils;
 import com.judecodes.mailmember.infrastructure.util.RandomPasswordGenerator;
 import com.judecodes.mailmember.infrastructure.util.UsernameGenerator;
 
+import jakarta.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 
-import static com.judecodes.mailapi.notice.constant.NoticeConstant.CODE_KEY_PREFIX;
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
+
 
 /**
  * <p>
@@ -39,73 +45,98 @@ import static com.judecodes.mailapi.notice.constant.NoticeConstant.CODE_KEY_PREF
 @Service
 public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> implements MemberService {
 
+
     @Autowired
-    private StringRedisTemplate stringRedisTemplate;
+    private CacheManager cacheManager;
+    /**
+     * 通过用户ID对用户信息做的缓存
+     */
+    private Cache<String, Member> idMemberCache;
+
+    @PostConstruct
+    public void init() {
+        QuickConfig idQc = QuickConfig.newBuilder(":member:cache:id:")
+                .cacheType(CacheType.BOTH)
+                .expire(Duration.ofHours(2))
+                .syncLocal(true)
+                .build();
+        idMemberCache = cacheManager.getOrCreateCache(idQc);
+    }
+
 
     @Override
-    public MemberVOResponse login(LoginRequest loginRequest) {
-        String username = loginRequest.getUsername();
-        String password = loginRequest.getPassword();
-        QueryWrapper<Member> queryWrapper = new QueryWrapper<Member>().eq("username", username);
-        Member member = this.getOne(queryWrapper);
-        Assert.notNull(member, UserErrorCode.USER_NOT_EXIST.getMessage());
-        boolean matches = PasswordUtils.matches(password, member.getPassword());
-        Assert.isFalse(matches, UserErrorCode.USER_PASSWD_CHECK_FAIL.getMessage());
-        MemberVOResponse memberVOResponse = new MemberVOResponse();
-        memberVOResponse.setUserId(member.getId());
-        return memberVOResponse;
+    @Cached(name = ":member:cache:id:", cacheType = CacheType.BOTH, key = "#memberId", cacheNullValue = true)
+    @CacheRefresh(refresh = 60, timeUnit = TimeUnit.MINUTES)
+    public Member findById(Long id) {
+
+
+            QueryWrapper<Member> memberQueryWrapper = new QueryWrapper<>();
+            memberQueryWrapper.eq("id", id);
+
+
+
+        return this.getOne(memberQueryWrapper);
     }
 
     @Override
-    public MemberVOResponse smsLogin(SmsLoginRequest smsLoginRequest) {
-        String phone = smsLoginRequest.getPhone();
-        String code = smsLoginRequest.getCode();
-        QueryWrapper<Member> queryWrapper = new QueryWrapper<Member>().eq("phone", phone);
-        Member member = this.getOne(queryWrapper);
+    public Member findByPhone(String phone) {
+        LambdaQueryWrapper<Member> memberQueryWrapper = new LambdaQueryWrapper<>();
+        memberQueryWrapper.eq(Member::getPhone, phone);
+        Member member = this.getOne(memberQueryWrapper);
         if (member == null) {
-            SmsRegisterRequest smsRegisterRequest = new SmsRegisterRequest();
-            smsRegisterRequest.setPhone(phone);
-            smsRegisterRequest.setCode(code);
-            return smsRegister(smsRegisterRequest);
+            throw new MemberException(MemberErrorCode.USER_NOT_EXIST);
         }
-        String sendCode = stringRedisTemplate.opsForValue().get(CODE_KEY_PREFIX + phone);
-        if (!code.equals(sendCode)) {
-            throw new UserException(UserErrorCode.CODE_ERROR);
-        }
-        stringRedisTemplate.delete(CODE_KEY_PREFIX + phone);
-
-        MemberVOResponse memberVOResponse = new MemberVOResponse();
-        memberVOResponse.setUserId(member.getId());
-        return memberVOResponse;
+        return member;
     }
 
     @Override
-    public MemberVOResponse smsRegister(SmsRegisterRequest smsRegisterRequest) {
-        String code = smsRegisterRequest.getCode();
-        String phone = smsRegisterRequest.getPhone();
-        String sendCode = stringRedisTemplate.opsForValue().get(CODE_KEY_PREFIX + phone);
-        if (!code.equals(sendCode)) {
-            throw new UserException(UserErrorCode.CODE_ERROR);
+    public Member findByUsernameAndPassword(String username, String password) {
+        QueryWrapper<Member> memberQueryWrapper = new QueryWrapper<>();
+        memberQueryWrapper.eq("username", username);
+        Member member = this.getOne(memberQueryWrapper);
+        if (member == null) {
+            throw new MemberException(MemberErrorCode.USER_NOT_EXIST);
         }
-        stringRedisTemplate.delete(CODE_KEY_PREFIX + phone);
-        Member member = new Member();
-        member.setPhone(phone);
-        member.setPassword(PasswordUtils.encode(RandomPasswordGenerator.generate()));
+        boolean matches = PasswordUtils.matches(password, member.getPassword());
+        if (!matches) {
+            throw new MemberException(MemberErrorCode.USER_PASSWD_CHECK_FAIL);
+        }
+        return member;
+    }
+
+    @Override
+    public MemberOperatorResponse smsRegister(String phone) {
+
+        QueryWrapper<Member> phoneQueryWrapper = new QueryWrapper<Member>().eq("phone", phone);
+        boolean existsMember = this.exists(phoneQueryWrapper);
+        if (existsMember){
+            throw new MemberException(MemberErrorCode.DUPLICATE_TELEPHONE_NUMBER);
+        }
+
         String username;
         boolean exists;
         do {
             username= UsernameGenerator.generate();
-            QueryWrapper<Member> queryWrapper = new QueryWrapper<Member>().eq("username", username);
-            exists = this.exists(queryWrapper);
+            QueryWrapper<Member> usernameQueryWrapper = new QueryWrapper<Member>().eq("username", username);
+            exists = this.exists(usernameQueryWrapper);
         }while (exists);
-        member.setUsername(username);
-        member.setNickname(username);
-        member.setGender(GenderEnum.SECRET.getCode());
-        member.setStatus(MemberStateEnum.ENABLED.getCode());
+
+        Member member = Member.builder()
+                .phone(phone)
+                .password(PasswordUtils.encode(RandomPasswordGenerator.generate()))
+                .username(username)
+                .nickname(username)
+                .gender(GenderEnum.SECRET.getCode())
+                .status(MemberStateEnum.ENABLED.getCode())
+                .build();
         boolean result = this.save(member);
-        Assert.isTrue(result, "注册失败");
-        MemberVOResponse memberVOResponse = new MemberVOResponse();
-        memberVOResponse.setUserId(member.getId());
+
+
+        if (!result) {
+            throw new MemberException(MemberErrorCode.USER_OPERATE_FAILED);
+        }
+        MemberOperatorResponse memberVOResponse = new MemberOperatorResponse();
+        memberVOResponse.setSuccess(true);
         return memberVOResponse;
     }
 }

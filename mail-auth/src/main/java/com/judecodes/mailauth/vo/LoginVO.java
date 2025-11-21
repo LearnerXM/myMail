@@ -1,6 +1,8 @@
 package com.judecodes.mailauth.vo;
 
 
+import cn.dev33.satoken.stp.StpUtil;
+import com.judecodes.mailapi.member.response.data.MemberInfo;
 import lombok.Data;
 
 import java.io.Serial;
@@ -27,6 +29,10 @@ public class LoginVO implements Serializable {
      */
     private Long tokenExpiration;
 
-
+    public LoginVO(MemberInfo memberInfo) {
+        this.userId= memberInfo.getId();
+        this.token= StpUtil.getTokenValue();
+        this.tokenExpiration= StpUtil.getTokenSessionTimeout();
+    }
 
 }

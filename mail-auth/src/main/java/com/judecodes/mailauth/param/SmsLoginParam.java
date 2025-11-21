@@ -22,4 +22,9 @@ public class SmsLoginParam {
      */
     @NotBlank
     private String code;
+
+    /**
+     * 记住我
+     */
+    private Boolean rememberMe;
 }

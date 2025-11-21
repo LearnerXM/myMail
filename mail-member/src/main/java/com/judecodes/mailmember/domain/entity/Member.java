@@ -5,9 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.judecodes.maildatasource.entity.BaseEntity;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -19,12 +17,12 @@ import java.time.LocalDate;
  * @author judecodes
  * @since 2025-11-18
  */
-@Getter
-@Setter
-@ToString
+@Data
+@AllArgsConstructor  // 这个很关键
+@NoArgsConstructor
 @TableName("ums_member")
+@Builder
 public class Member extends BaseEntity {
-
 
 
     @TableField("member_level_id")

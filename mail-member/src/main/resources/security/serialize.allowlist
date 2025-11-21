@@ -1,0 +1,3 @@
+com.judecodes.mailapi.member.request.condition.MemberIdQueryCondition
+com.judecodes.mailapi.member.request.condition.MemberPhoneQueryCondition
+com.judecodes.mailapi.member.request.condition.MemberUsernameAndPasswordQueryCondition

@@ -1,15 +1,17 @@
 package com.judecodes.mailauth.controller;
 
 
+import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.lang.Assert;
-import com.judecodes.mailapi.member.request.LoginRequest;
-import com.judecodes.mailapi.member.request.SmsLoginRequest;
-import com.judecodes.mailapi.member.request.SmsRegisterRequest;
-import com.judecodes.mailapi.member.response.MemberVOResponse;
+import com.judecodes.mailapi.member.request.MemberQueryRequest;
+import com.judecodes.mailapi.member.response.MemberOperatorResponse;
+import com.judecodes.mailapi.member.response.MemberQueryResponse;
+import com.judecodes.mailapi.member.response.data.MemberInfo;
 import com.judecodes.mailapi.member.service.MemberFacadeService;
+import com.judecodes.mailapi.notice.response.NoticeResponse;
 import com.judecodes.mailapi.notice.service.NoticeFacadeService;
+import com.judecodes.mailauth.exception.AuthErrorCode;
+import com.judecodes.mailauth.exception.AuthException;
 import com.judecodes.mailauth.param.LoginParam;
 import com.judecodes.mailauth.param.SmsLoginParam;
 import com.judecodes.mailauth.param.SmsRegisterParam;
@@ -17,11 +19,18 @@ import com.judecodes.mailauth.vo.LoginVO;
 import com.judecodes.mailbase.validator.Phone;
 import com.judecodes.mailweb.vo.Result;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import static com.judecodes.mailapi.notice.constant.NoticeConstant.CODE_KEY_PREFIX;
+
 @RestController
+@Slf4j
 @RequestMapping("/auth")
 public class AuthController {
 
@@ -31,46 +40,96 @@ public class AuthController {
     @DubboReference(version = "1.0.0")
     private MemberFacadeService memberFacadeService;
 
-    @PostMapping("/sendCode")
-    @Validated
-    public Result<String> sendCode(@Phone String phone){
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+    /**
+     * 开发验证码
+     */
+    private static final String ROOT_CAPTCHA = "8888";
 
-        Boolean result = noticeFacadeService.sendCode(phone);
-        Assert.isTrue(result, "验证码发送失败");
-        return Result.success("验证码已发送");
+    /**
+     * 默认登录超时时间：7天
+     */
+    private static final Integer DEFAULT_LOGIN_SESSION_TIMEOUT = 60 * 60 * 24 * 7;
+
+    @GetMapping("/sendCode")//获得信息用Get
+    @Validated
+    public Result<Boolean> sendCode(@Phone String phone){
+
+        NoticeResponse noticeResponse = noticeFacadeService.sendCode(phone);
+
+        return Result.success(noticeResponse.getSuccess());
     }
 
     @PostMapping("/login")
     public Result<LoginVO> login(@Valid @RequestBody LoginParam loginParam){
-        LoginRequest loginRequest = new LoginRequest();
-        BeanUtil.copyProperties(loginParam, loginRequest);
-        MemberVOResponse memberVOResponse = memberFacadeService.login(loginRequest);
-        LoginVO loginVO = new LoginVO();
-        loginVO.setUserId(memberVOResponse.getUserId());
-        StpUtil.login(memberVOResponse.getUserId());
+
+        MemberQueryRequest memberQueryRequest = new MemberQueryRequest(loginParam.getUsername(), loginParam.getPassword());
+        MemberQueryResponse<MemberInfo> memberQueryResponse= memberFacadeService.query(memberQueryRequest);
+
+        MemberInfo memberInfo = memberQueryResponse.getData();
+        if (memberInfo == null) {
+            throw new AuthException(AuthErrorCode.USER_NOT_EXIST);
+        }
+        StpUtil.login(memberInfo.getId(),new SaLoginModel().setIsLastingCookie(loginParam.getRememberMe())
+                .setTimeout(DEFAULT_LOGIN_SESSION_TIMEOUT));
+        StpUtil.getSession().set(memberInfo.getId().toString(),memberInfo);
+        LoginVO loginVO = new LoginVO(memberInfo);
         return Result.success(loginVO);
     }
 
     @PostMapping("/smsLogin")
     public Result<LoginVO> smsLogin(@Valid @RequestBody SmsLoginParam smsLoginParam){
-        SmsLoginRequest smsLoginRequest = new SmsLoginRequest();
-        BeanUtil.copyProperties(smsLoginParam, smsLoginRequest);
-        MemberVOResponse memberVOResponse = memberFacadeService.smsLogin(smsLoginRequest);
-        LoginVO loginVO = new LoginVO();
-        loginVO.setUserId(memberVOResponse.getUserId());
-        StpUtil.login(memberVOResponse.getUserId());
+
+        if (!ROOT_CAPTCHA.equals(smsLoginParam.getCode())) {
+            String sendCode = stringRedisTemplate.opsForValue().get(CODE_KEY_PREFIX + smsLoginParam.getPhone());
+            if (!StringUtils.equalsIgnoreCase(sendCode, smsLoginParam.getCode())) {
+                throw new AuthException(AuthErrorCode.VERIFICATION_CODE_WRONG);
+            }
+        }
+
+        MemberQueryRequest memberQueryRequest = new MemberQueryRequest(smsLoginParam.getPhone());
+        MemberQueryResponse<MemberInfo> memberQueryResponse= memberFacadeService.query(memberQueryRequest);
+
+        MemberInfo memberInfo = memberQueryResponse.getData();
+        if (memberInfo == null) {
+            MemberOperatorResponse memberVOResponse = memberFacadeService.smsRegister(smsLoginParam.getPhone());
+
+            if (memberVOResponse.getSuccess()){
+                memberQueryResponse= memberFacadeService.query(memberQueryRequest);
+                memberInfo = memberQueryResponse.getData();
+                StpUtil.login(memberInfo.getId(),new SaLoginModel().setIsLastingCookie(smsLoginParam.getRememberMe())
+                        .setTimeout(DEFAULT_LOGIN_SESSION_TIMEOUT));
+                StpUtil.getSession().set(memberInfo.getId().toString(),memberInfo);
+                LoginVO loginVO = new LoginVO(memberInfo);
+                return Result.success(loginVO);
+            }
+            return Result.error(memberVOResponse.getResponseCode(), memberVOResponse.getResponseMessage());
+        }
+
+        StpUtil.login(memberInfo.getId(),new SaLoginModel().setIsLastingCookie(smsLoginParam.getRememberMe())
+                .setTimeout(DEFAULT_LOGIN_SESSION_TIMEOUT));
+        StpUtil.getSession().set(memberInfo.getId().toString(),memberInfo);
+        LoginVO loginVO = new LoginVO(memberInfo);
         return Result.success(loginVO);
     }
 
     @PostMapping("/smsRegister")
-    public Result<LoginVO> smsRegister(@Valid @RequestBody SmsRegisterParam smsRegisterParam){
-        SmsRegisterRequest smsRegisterRequest = new SmsRegisterRequest();
-        BeanUtil.copyProperties(smsRegisterParam, smsRegisterRequest);
-        MemberVOResponse memberVOResponse = memberFacadeService.smsRegister(smsRegisterRequest);
-        LoginVO loginVO = new LoginVO();
-        loginVO.setUserId(memberVOResponse.getUserId());
-        StpUtil.login(memberVOResponse.getUserId());
-        return Result.success(loginVO);
+    public Result<Boolean> smsRegister(@Valid @RequestBody SmsRegisterParam smsRegisterParam){
+        if (!ROOT_CAPTCHA.equals(smsRegisterParam.getCode())) {
+            //验证码校验
+            String sendCode = stringRedisTemplate.opsForValue().get(CODE_KEY_PREFIX + smsRegisterParam.getPhone());
+            if (!StringUtils.equalsIgnoreCase(sendCode, smsRegisterParam.getCode())) {
+                throw new AuthException(AuthErrorCode.VERIFICATION_CODE_WRONG);
+            }
+        }
+        MemberOperatorResponse memberVOResponse = memberFacadeService.smsRegister(smsRegisterParam.getPhone());
+
+        if (memberVOResponse.getSuccess()){
+            return Result.success(true);
+        }
+
+        return Result.error(memberVOResponse.getResponseCode(), memberVOResponse.getResponseMessage());
     }
 
     @PostMapping("/logout")

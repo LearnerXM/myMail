@@ -15,4 +15,9 @@ public class LoginParam {
      */
     @NotBlank
     private String password;
+
+    /**
+     * 记住我
+     */
+    private Boolean rememberMe;
 }

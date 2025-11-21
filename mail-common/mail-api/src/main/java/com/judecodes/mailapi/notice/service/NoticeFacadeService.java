@@ -1,7 +1,9 @@
 package com.judecodes.mailapi.notice.service;
 
+import com.judecodes.mailapi.notice.response.NoticeResponse;
+
 public interface NoticeFacadeService {
 
-    Boolean sendCode( String phone);
+    NoticeResponse sendCode(String phone);
 
 }

@@ -1,9 +1,7 @@
 package com.judecodes.mailmember.domain.service;
 
-import com.judecodes.mailapi.member.request.LoginRequest;
-import com.judecodes.mailapi.member.request.SmsLoginRequest;
-import com.judecodes.mailapi.member.request.SmsRegisterRequest;
-import com.judecodes.mailapi.member.response.MemberVOResponse;
+
+import com.judecodes.mailapi.member.response.MemberOperatorResponse;
 import com.judecodes.mailmember.domain.entity.Member;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -16,8 +14,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2025-11-18
  */
 public interface MemberService extends IService<Member> {
-    MemberVOResponse login(LoginRequest loginRequest);
-    MemberVOResponse smsLogin(SmsLoginRequest smsLoginRequest);
-    MemberVOResponse smsRegister(SmsRegisterRequest smsRegisterRequest);
+
+    Member findById(Long id);
+    Member findByPhone(String phone);
+    Member findByUsernameAndPassword(String username, String password);
+    MemberOperatorResponse smsRegister(String phone);
 
 }

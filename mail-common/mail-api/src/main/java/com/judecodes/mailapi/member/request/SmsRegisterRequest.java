@@ -6,6 +6,8 @@ import lombok.Data;
 @Data
 public class SmsRegisterRequest extends BaseRequest {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 手机号码
      */
