@@ -13,6 +13,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface NoticeService extends IService<Notice> {
 
-     Notice saveCode(String phone,String code);
+     Notice saveCode(String phone,String code,String smsType);
 
 }

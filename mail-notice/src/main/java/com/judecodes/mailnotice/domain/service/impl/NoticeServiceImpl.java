@@ -26,11 +26,12 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
 
 
     @Override
-    public Notice saveCode(String phone, String code) {
+    public Notice saveCode(String phone, String code,String smsType) {
         Notice notice = Notice.builder()
                 .noticeTitle(SMS_NOTICE_TITLE)
                 .noticeContent(code)
                 .targetAddress(phone)
+                .smsType(smsType)
                 .state(NoticeState.INIT.name())
                 .noticeType(NoticeType.SMS.name())
                 .build();

@@ -2,7 +2,9 @@ package com.judecodes.mailnotice.facade;
 
 
 import cn.hutool.core.util.RandomUtil;
+import com.judecodes.mailapi.notice.constant.SmsType;
 import com.judecodes.mailapi.notice.response.NoticeResponse;
+import com.judecodes.mailapi.notice.resquest.SendCodeRequest;
 import com.judecodes.mailapi.notice.service.NoticeFacadeService;
 import com.judecodes.mailbase.exception.BizErrorCode;
 import com.judecodes.mailbase.exception.SystemException;
@@ -16,7 +18,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.judecodes.mailapi.notice.constant.NoticeConstant.CODE_KEY_PREFIX;
+
 
 
 @DubboService(version = "1.0.0")
@@ -31,7 +33,10 @@ public class NoticeFacadeServiceImpl implements NoticeFacadeService {
 
     @Facade
     @Override
-    public NoticeResponse sendCode(String phone) {
+    public NoticeResponse sendCode(SendCodeRequest sendCodeRequest) {
+
+        String phone = sendCodeRequest.getPhone();
+        SmsType smsType = sendCodeRequest.getSmsType();
         boolean result = rateLimiter.tryAcquire(phone, 1, 60);
 
         if (!result){
@@ -40,9 +45,9 @@ public class NoticeFacadeServiceImpl implements NoticeFacadeService {
 
         String code = RandomUtil.randomNumbers(6);
 
-        stringRedisTemplate.opsForValue().set(CODE_KEY_PREFIX + phone, code, 5, TimeUnit.MINUTES);
+        stringRedisTemplate.opsForValue().set(smsType.buildRedisKey(phone), code, 5, TimeUnit.MINUTES);
 
-        Notice notice = noticeService.saveCode(phone, code);
+        Notice notice = noticeService.saveCode(phone, code, smsType.getCode());
         if (notice==null){
             throw new SystemException(BizErrorCode.NOTICE_SAVE_FAILED);
         }

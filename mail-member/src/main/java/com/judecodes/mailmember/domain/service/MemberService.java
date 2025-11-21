@@ -20,4 +20,8 @@ public interface MemberService extends IService<Member> {
     Member findByUsernameAndPassword(String username, String password);
     MemberOperatorResponse smsRegister(String phone);
 
+    void modifyNickName(String memberId,String nickName);
+
+    void modifyPassword(String memberId,String password);
+
 }

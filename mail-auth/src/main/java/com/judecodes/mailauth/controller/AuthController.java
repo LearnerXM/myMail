@@ -8,7 +8,9 @@ import com.judecodes.mailapi.member.response.MemberOperatorResponse;
 import com.judecodes.mailapi.member.response.MemberQueryResponse;
 import com.judecodes.mailapi.member.response.data.MemberInfo;
 import com.judecodes.mailapi.member.service.MemberFacadeService;
+import com.judecodes.mailapi.notice.constant.SmsType;
 import com.judecodes.mailapi.notice.response.NoticeResponse;
+import com.judecodes.mailapi.notice.resquest.SendCodeRequest;
 import com.judecodes.mailapi.notice.service.NoticeFacadeService;
 import com.judecodes.mailauth.exception.AuthErrorCode;
 import com.judecodes.mailauth.exception.AuthException;
@@ -52,11 +54,14 @@ public class AuthController {
      */
     private static final Integer DEFAULT_LOGIN_SESSION_TIMEOUT = 60 * 60 * 24 * 7;
 
-    @GetMapping("/sendCode")//获得信息用Get
+    @GetMapping("/sendAuthCode")//获得信息用Get
     @Validated
-    public Result<Boolean> sendCode(@Phone String phone){
+    public Result<Boolean> sendAuthCode(@Phone String phone){
 
-        NoticeResponse noticeResponse = noticeFacadeService.sendCode(phone);
+        SendCodeRequest sendCodeRequest = new SendCodeRequest();
+        sendCodeRequest.setPhone(phone);
+        sendCodeRequest.setSmsType(SmsType.AUTH);
+        NoticeResponse noticeResponse = noticeFacadeService.sendCode(sendCodeRequest);
 
         return Result.success(noticeResponse.getSuccess());
     }

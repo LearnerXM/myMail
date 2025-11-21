@@ -28,16 +28,13 @@ public class SaTokenConfigure {
                 // 拦截地址
                 .addInclude("/**")    /* 拦截全部path */
                 // 开放地址
-                .addExclude("/favicon.ico")
+                .addExclude("/favicon.ico","/auth/**","/doc/**","/goods/**")
                 // 鉴权方法：每次访问进入
                 .setAuth(obj -> {
+                    log.info("网关鉴权生效");
                     // 指定一条 match 规则
-                    SaRouter
-                            .match("/**")    // 拦截的 path 列表，可以写多个 */
-                            .notMatch("/auth/**")        // 排除掉的 path 列表，可以写多个
-                            .notMatch( "/doc/**")
-                            .notMatch("/goods/**")
-                            .check(r -> StpUtil.checkLogin());        // 要执行的校验动作，可以写完整的 lambda 表达式
+                    SaRouter.match("/**",r -> StpUtil.checkLogin());   // 拦截的 path 列表，可以写多个 */
+
 
                     //TODO 不同的管理员角色
 

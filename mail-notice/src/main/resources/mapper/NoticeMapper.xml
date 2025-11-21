@@ -17,6 +17,7 @@
         <result column="lock_version" property="lockVersion" />
         <result column="retry_times" property="retryTimes" />
         <result column="extend_info" property="extendInfo" />
+        <result column="sms_type" property="smsType" />
     </resultMap>
 
     <!-- 通用查询结果列 -->

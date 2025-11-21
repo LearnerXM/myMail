@@ -75,5 +75,9 @@ public class Notice extends BaseEntity {
     @TableField("extend_info")
     private String extendInfo;
 
-
+    /**
+     * 短信类型：AUTH / PASSWORD_CHANGE
+     */
+    @TableField("sms_type")
+    private String smsType;
 }

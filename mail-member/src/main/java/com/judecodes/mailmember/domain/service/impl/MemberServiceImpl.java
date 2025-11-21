@@ -9,6 +9,7 @@ import com.alicp.jetcache.anno.Cached;
 import com.alicp.jetcache.template.QuickConfig;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
 import com.judecodes.mailapi.member.constant.GenderEnum;
 import com.judecodes.mailapi.member.constant.MemberStateEnum;
 import com.judecodes.mailapi.member.response.MemberOperatorResponse;
@@ -68,13 +69,8 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
     @Cached(name = ":member:cache:id:", cacheType = CacheType.BOTH, key = "#memberId", cacheNullValue = true)
     @CacheRefresh(refresh = 60, timeUnit = TimeUnit.MINUTES)
     public Member findById(Long id) {
-
-
-            QueryWrapper<Member> memberQueryWrapper = new QueryWrapper<>();
-            memberQueryWrapper.eq("id", id);
-
-
-
+        QueryWrapper<Member> memberQueryWrapper = new QueryWrapper<>();
+        memberQueryWrapper.eq("id", id);
         return this.getOne(memberQueryWrapper);
     }
 
@@ -109,17 +105,17 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
 
         QueryWrapper<Member> phoneQueryWrapper = new QueryWrapper<Member>().eq("phone", phone);
         boolean existsMember = this.exists(phoneQueryWrapper);
-        if (existsMember){
+        if (existsMember) {
             throw new MemberException(MemberErrorCode.DUPLICATE_TELEPHONE_NUMBER);
         }
 
         String username;
         boolean exists;
         do {
-            username= UsernameGenerator.generate();
+            username = UsernameGenerator.generate();
             QueryWrapper<Member> usernameQueryWrapper = new QueryWrapper<Member>().eq("username", username);
             exists = this.exists(usernameQueryWrapper);
-        }while (exists);
+        } while (exists);
 
         Member member = Member.builder()
                 .phone(phone)
@@ -138,5 +134,24 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
         MemberOperatorResponse memberVOResponse = new MemberOperatorResponse();
         memberVOResponse.setSuccess(true);
         return memberVOResponse;
+    }
+    public void modifyNickName(String memberId,String nickName){
+        boolean result = this.lambdaUpdate()
+                .set(Member::getNickname, nickName)
+                .eq(Member::getId, Long.parseLong(memberId))
+                .update();
+        if (!result) {
+            throw new MemberException(MemberErrorCode.USER_MODIFY_NICKNAME_FAIL);
+        }
+    }
+    public void modifyPassword(String memberId,String password){
+
+        boolean result = this.lambdaUpdate()
+                .set(Member::getPassword, PasswordUtils.encode(password))
+                .eq(Member::getId, Long.parseLong(memberId))
+                .update();
+        if (!result) {
+            throw new MemberException(MemberErrorCode.USER_MODIFY_PASSWORD_FAIL);
+        }
     }
 }

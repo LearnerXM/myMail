@@ -18,6 +18,7 @@ public enum MemberErrorCode implements ErrorCode {
      * 用户不存在
      */
     USER_NOT_EXIST("USER_NOT_EXIST", "用户不存在"),
+
     /**
      * 用户状态不能进行操作
      */
@@ -40,16 +41,33 @@ public enum MemberErrorCode implements ErrorCode {
     /**
      * 用户名已存在
      */
-    NICK_NAME_EXIST("NICK_NAME_EXIST", "用户名已存在"),
+    NICK_NAME_IS_NULL("NICK_NAME_IS_NULL", "用户名不能为空"),
     /**
      * 验证码错误
      */
     CODE_ERROR("CODE_ERROR", "验证码错误"),
 
     /**
+     * Token异常
+     */
+    TOKEN_ERROR("TOKEN_ERROR","密码Token异常"),
+    /**
      * 用户上传图片失败
      */
-    USER_UPLOAD_PICTURE_FAIL("USER_UPLOAD_PICTURE_FAIL", "用户上传图片失败");
+    USER_UPLOAD_PICTURE_FAIL("USER_UPLOAD_PICTURE_FAIL", "用户上传图片失败"),
+    /**
+     * 用户修改用户名失败
+     */
+    USER_MODIFY_NICKNAME_FAIL("USER_MODIFY_NICKNAME_FAIL","修改用户名失败"),
+    /**
+     * 用户修改密码失败
+     */
+    USER_MODIFY_PASSWORD_FAIL("USER_MODIFY_PASSWORD_FAIL","修改密码失败"),
+    /**
+     * 非法手机号
+     */
+    ILLEGAL_PHONE("ILLEGAL_PHONE","非法手机号"),
+    ;
 
     private final String code;
 
