@@ -53,7 +53,7 @@ public class NoticeFacadeServiceImpl implements NoticeFacadeService {
         }
         // TODO: send notice
         //使用虚拟线程通过smsService服务发送短信，并更新短信表
-
+        //短信发送成功后更改通知状态
         NoticeResponse noticeResponse = new NoticeResponse();
         noticeResponse.setSuccess(true);
         return noticeResponse;

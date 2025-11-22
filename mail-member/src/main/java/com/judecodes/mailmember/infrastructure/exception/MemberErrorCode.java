@@ -63,10 +63,19 @@ public enum MemberErrorCode implements ErrorCode {
      * 用户修改密码失败
      */
     USER_MODIFY_PASSWORD_FAIL("USER_MODIFY_PASSWORD_FAIL","修改密码失败"),
+
+    /**
+     * 用户修改个性签名失败
+     */
+    USER_MODIFY_SIGNATURE_FAIL("USER_MODIFY_SIGNATURE_FAIL","修改个性签名失败"),
     /**
      * 非法手机号
      */
     ILLEGAL_PHONE("ILLEGAL_PHONE","非法手机号"),
+    /**
+     * 用户状态异常
+     */
+    USER_STATUS_ERROR("USER_STATUS_ERROR","用户状态异常"),
     ;
 
     private final String code;

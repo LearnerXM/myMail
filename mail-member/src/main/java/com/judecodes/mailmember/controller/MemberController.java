@@ -17,6 +17,7 @@ import com.judecodes.mailmember.param.ModifyPasswordParam;
 import com.judecodes.mailmember.param.VerifyCodeParam;
 import com.judecodes.mailweb.vo.Result;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
@@ -28,6 +29,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import static com.judecodes.mailapi.member.constant.MemberConstants.PWD_CHANGE_TOKEN;
+
 /**
  * <p>
  * 会员表 前端控制器
@@ -38,6 +41,7 @@ import java.util.concurrent.TimeUnit;
  */
 @RestController
 @RequestMapping("/member")
+@Validated
 public class MemberController {
 
     @DubboReference(version = "1.0.0")
@@ -49,7 +53,7 @@ public class MemberController {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
-    private final  String PWD_CHANGE_TOKEN = "pwd:change:token:";
+
 
     @GetMapping("/getMemberInfo")
     public Result<MemberInfo> getMemberInfo(){
@@ -79,8 +83,8 @@ public class MemberController {
     public Result<Boolean> modifyNickName(String nickName){
         String memberId = (String)StpUtil.getLoginId();
         Member member = memberService.findById(Long.parseLong(memberId) );
-        if (member==null){
-            throw new MemberException(MemberErrorCode.USER_QUERY_FAIL);
+        if (member.getStatus()!= MemberStateEnum.ENABLED.getCode()){
+            throw new MemberException(MemberErrorCode.USER_STATUS_ERROR);
         }
         if (StringUtils.isBlank(nickName)){
             throw new MemberException(MemberErrorCode.NICK_NAME_IS_NULL);
@@ -89,13 +93,13 @@ public class MemberController {
         return Result.success(true);
     }
     @GetMapping("/sendPasswordChangeCode")//获得信息用Get
-    @Validated
+
     public Result<Boolean> sendPasswordChangeCode(@Phone String phone){
         if (StpUtil.isLogin()){
             String memberId = (String)StpUtil.getLoginId();
             Member member = memberService.findById(Long.parseLong(memberId) );
-            if (member==null){
-                throw new MemberException(MemberErrorCode.USER_QUERY_FAIL);
+            if (member.getStatus()!= MemberStateEnum.ENABLED.getCode()){
+                throw new MemberException(MemberErrorCode.USER_STATUS_ERROR);
             }
             String loginPhone = member.getPhone();
             if (!StringUtils.equals(loginPhone,phone)){
@@ -120,7 +124,7 @@ public class MemberController {
             throw new MemberException(MemberErrorCode.CODE_ERROR);
         }
         stringRedisTemplate.delete(SmsType.PASSWORD_CHANGE.buildRedisKey(phone));
-        //TODO: 更改通知状态
+        //TODO 短信检验成功后更改通知状态
 
         // 生成一次性 token
         String changeToken = UUID.randomUUID().toString().replace("-", "");
@@ -133,11 +137,8 @@ public class MemberController {
     public Result<Boolean> modifyPassword(@Valid @RequestBody ModifyPasswordParam modifyPasswordParam){
         String memberId = (String)StpUtil.getLoginId();
         Member member = memberService.findById(Long.parseLong(memberId) );
-        if (member==null){
-            throw new MemberException(MemberErrorCode.USER_QUERY_FAIL);
-        }
         if (member.getStatus()!= MemberStateEnum.ENABLED.getCode()){
-            throw new MemberException(MemberErrorCode.USER_STATUS_CANT_OPERATE);
+            throw new MemberException(MemberErrorCode.USER_STATUS_ERROR);
         }
         String phone = member.getPhone();
 
@@ -152,9 +153,19 @@ public class MemberController {
         StpUtil.logout();
         return Result.success(true);
     }
-
+    @PostMapping("/modifySignature")
+    public Result<Boolean> modifySignature(@Size(max = 128, message = "个性签名长度不能超过128个字符") String signature){
+        String memberId = (String)StpUtil.getLoginId();
+        Member member = memberService.findById(Long.parseLong(memberId) );
+        if (member.getStatus()!= MemberStateEnum.ENABLED.getCode()){
+            throw new MemberException(MemberErrorCode.USER_STATUS_ERROR);
+        }
+        memberService.modifySignature(memberId,signature);
+        return Result.success(true);
+    }
+    //TODO 上传头像功能
     @PostMapping("/modifyProfilePhoto")
-    public Result<Boolean> modifyProfilePhoto(){
+    public Result<String> modifyProfilePhoto(){
         return null;
     }
     /**

@@ -29,7 +29,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import static com.judecodes.mailapi.notice.constant.NoticeConstant.CODE_KEY_PREFIX;
 
 @RestController
 @Slf4j
@@ -87,10 +86,13 @@ public class AuthController {
     public Result<LoginVO> smsLogin(@Valid @RequestBody SmsLoginParam smsLoginParam){
 
         if (!ROOT_CAPTCHA.equals(smsLoginParam.getCode())) {
-            String sendCode = stringRedisTemplate.opsForValue().get(CODE_KEY_PREFIX + smsLoginParam.getPhone());
-            if (!StringUtils.equalsIgnoreCase(sendCode, smsLoginParam.getCode())) {
+            String cacheCode = stringRedisTemplate.opsForValue().get(SmsType.AUTH.buildRedisKey(smsLoginParam.getPhone()));
+            if (!StringUtils.equalsIgnoreCase(cacheCode, smsLoginParam.getCode())) {
                 throw new AuthException(AuthErrorCode.VERIFICATION_CODE_WRONG);
             }
+            //TODO 短信检验成功后更改通知状态
+            //短信检验成功后更改通知状态
+            stringRedisTemplate.delete(SmsType.AUTH.buildRedisKey(smsLoginParam.getPhone()));
         }
 
         MemberQueryRequest memberQueryRequest = new MemberQueryRequest(smsLoginParam.getPhone());
@@ -123,10 +125,13 @@ public class AuthController {
     public Result<Boolean> smsRegister(@Valid @RequestBody SmsRegisterParam smsRegisterParam){
         if (!ROOT_CAPTCHA.equals(smsRegisterParam.getCode())) {
             //验证码校验
-            String sendCode = stringRedisTemplate.opsForValue().get(CODE_KEY_PREFIX + smsRegisterParam.getPhone());
-            if (!StringUtils.equalsIgnoreCase(sendCode, smsRegisterParam.getCode())) {
+            String cacheCode = stringRedisTemplate.opsForValue().get(SmsType.AUTH.buildRedisKey(smsRegisterParam.getPhone()));
+            if (!StringUtils.equalsIgnoreCase(cacheCode, smsRegisterParam.getCode())) {
                 throw new AuthException(AuthErrorCode.VERIFICATION_CODE_WRONG);
             }
+            //TODO
+            //短信检验成功后更改通知状态
+            stringRedisTemplate.delete(SmsType.AUTH.buildRedisKey(smsRegisterParam.getPhone()));
         }
         MemberOperatorResponse memberVOResponse = memberFacadeService.smsRegister(smsRegisterParam.getPhone());
 

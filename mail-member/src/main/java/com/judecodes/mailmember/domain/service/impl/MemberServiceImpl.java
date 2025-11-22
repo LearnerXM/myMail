@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import com.judecodes.mailapi.member.constant.GenderEnum;
+
 import com.judecodes.mailapi.member.constant.MemberStateEnum;
 import com.judecodes.mailapi.member.response.MemberOperatorResponse;
 
@@ -34,6 +35,8 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
+import static com.judecodes.mailapi.member.constant.MemberConstants.*;
+
 
 /**
  * <p>
@@ -52,6 +55,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
     /**
      * 通过用户ID对用户信息做的缓存
      */
+
     private Cache<String, Member> idMemberCache;
 
     @PostConstruct
@@ -122,8 +126,13 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
                 .password(PasswordUtils.encode(RandomPasswordGenerator.generate()))
                 .username(username)
                 .nickname(username)
+                .memberLevelId(DEFAULT_MEMBER_LEVEL_ID)
+                .integration(DEFAULT_INTEGRATION)
+                .growth(DEFAULT_GROWTH)
                 .gender(GenderEnum.SECRET.getCode())
                 .status(MemberStateEnum.ENABLED.getCode())
+                .luckeyCount(DEFAULT_LUCKY_COUNT)
+                .historyIntegration(DEFAULT_HISTORY_INTEGRATION)
                 .build();
         boolean result = this.save(member);
 
@@ -154,4 +163,17 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
             throw new MemberException(MemberErrorCode.USER_MODIFY_PASSWORD_FAIL);
         }
     }
+
+    @Override
+    public void modifySignature(String memberId, String signature) {
+        boolean result = this.lambdaUpdate()
+                .set(Member::getPersonalizedSignature, signature)
+                .eq(Member::getId, Long.parseLong(memberId))
+                .update();
+
+        if (!result) {
+            throw new MemberException(MemberErrorCode.USER_MODIFY_SIGNATURE_FAIL);
+        }
+    }
+
 }

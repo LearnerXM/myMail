@@ -24,4 +24,6 @@ public interface MemberService extends IService<Member> {
 
     void modifyPassword(String memberId,String password);
 
+    void modifySignature(String memberId,String signature);
+
 }
