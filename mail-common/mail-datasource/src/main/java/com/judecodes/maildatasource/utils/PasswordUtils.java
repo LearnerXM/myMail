@@ -1,4 +1,4 @@
-package com.judecodes.mailmember.infrastructure.util;
+package com.judecodes.maildatasource.utils;
 
 
 

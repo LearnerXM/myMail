@@ -20,7 +20,7 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
 
         // deleted / lockVersion 是 Integer/Long 时也可以用 strictInsertFill
         this.strictInsertFill(metaObject, "deleted", Integer.class, 0);
-        this.strictInsertFill(metaObject, "lockVersion", Integer.class, 1);
+        this.strictInsertFill(metaObject, "lockVersion", Integer.class, 0);
     }
 
 

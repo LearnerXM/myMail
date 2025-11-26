@@ -28,12 +28,12 @@ public enum MemberErrorCode implements ErrorCode {
     /**
      * 用户操作失败
      */
-    USER_OPERATE_FAILED("USER_OPERATE_FAILED", "数据库操作异常，用户注册失败"),
+    USER_OPERATE_FAILED("USER_OPERATE_FAILED", "数据库操作异常，用户操作失败"),
 
     /**
      * 用户密码校验失败
      */
-    USER_PASSWD_CHECK_FAIL("USER_PASSWD_CHECK_FAIL", "用户密码校验失败"),
+    USER_PASSWD_CHECK_FAIL("USER_PASSWD_CHECK_FAIL", "密码错误"),
     /**
      * 用户查询失败
      */

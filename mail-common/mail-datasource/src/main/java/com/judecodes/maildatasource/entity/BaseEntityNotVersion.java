@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 
-public class BaseEntity implements Serializable {
+public class BaseEntityNotVersion implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 

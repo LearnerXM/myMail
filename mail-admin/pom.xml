@@ -29,7 +29,47 @@
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-base</artifactId>
+        </dependency>
 
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-config</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-file</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-lock</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-rpc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-web</artifactId>
+        </dependency>
+
+
+
+        <dependency>
+            <groupId>com.JudeCodes</groupId>
+            <artifactId>mail-datasource</artifactId>
+        </dependency>
 
         <!--  TEST  -->
         <dependency>
@@ -66,7 +106,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>cn.hollis.my.mail.admin.NfTurboAdminApplication</mainClass>
+                    <mainClass>com.judecodes.mailadmin.MailAdminApplication</mainClass>
                 </configuration>
 
                 <executions>
@@ -83,3 +123,4 @@
     </build>
 
 </project>
+

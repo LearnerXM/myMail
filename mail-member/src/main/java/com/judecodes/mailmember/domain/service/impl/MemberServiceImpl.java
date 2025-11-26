@@ -22,9 +22,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.judecodes.mailmember.infrastructure.exception.MemberErrorCode;
 import com.judecodes.mailmember.infrastructure.exception.MemberException;
 import com.judecodes.mailmember.infrastructure.mapper.MemberMapper;
-import com.judecodes.mailmember.infrastructure.util.PasswordUtils;
-import com.judecodes.mailmember.infrastructure.util.RandomPasswordGenerator;
-import com.judecodes.mailmember.infrastructure.util.UsernameGenerator;
+import com.judecodes.maildatasource.utils.PasswordUtils;
+import com.judecodes.maildatasource.utils.RandomPasswordGenerator;
+import com.judecodes.maildatasource.utils.UsernameGenerator;
 
 import jakarta.annotation.PostConstruct;
 
