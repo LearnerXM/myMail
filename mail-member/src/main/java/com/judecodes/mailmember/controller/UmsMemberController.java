@@ -42,7 +42,7 @@ import static com.judecodes.mailapi.member.constant.MemberConstants.PWD_CHANGE_T
 @RestController
 @RequestMapping("/member")
 @Validated
-public class MemberController {
+public class UmsMemberController {
 
     @DubboReference(version = "1.0.0")
     private NoticeFacadeService noticeFacadeService;

@@ -5,14 +5,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- * 后台用户角色表 前端控制器
+ * 后台菜单表 前端控制器
  * </p>
  *
  * @author judecodes
  * @since 2025-11-26
  */
 @RestController
-@RequestMapping("/role")
-public class RoleController {
+@RequestMapping("/menu")
+public class UmsMenuController {
 
 }

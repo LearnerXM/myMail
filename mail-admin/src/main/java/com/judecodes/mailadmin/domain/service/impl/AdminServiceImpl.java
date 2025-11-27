@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements AdminService {
 
     @Override
-    public Admin login(String username, String password) {
+    public Admin findByUsernameAndPassword(String username, String password) {
         Admin admin = this.lambdaQuery()
                 .eq(Admin::getUsername, username)
                 .one();
@@ -32,10 +32,11 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         if (admin.getStatus()!= AdminStateEnum.ENABLED.getCode()){
             throw new AdminException(AdminErrorCode.ADMIN_STATUS_ERROR);
         }
-
         if(!PasswordUtils.matches(password, admin.getPassword())){
             throw new AdminException(AdminErrorCode.ADMIN_PASSWD_CHECK_FAIL);
         }
         return admin;
     }
+
+
 }
