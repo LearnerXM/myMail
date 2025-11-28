@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 /**
  * <p>
- * 后台用户角色表
+ * 后台资源表
  * </p>
  *
  * @author judecodes
@@ -21,35 +21,11 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-@TableName("ums_role")
-public class Role {
+@TableName("ums_resource")
+public class Resource {
 
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
-
-    /**
-     * 角色编码，如 SUPER_ADMIN
-     */
-    @TableField("role_code")
-    private String roleCode;
-
-    /**
-     * 名称
-     */
-    @TableField("name")
-    private String name;
-
-    /**
-     * 描述
-     */
-    @TableField("description")
-    private String description;
-
-    /**
-     * 后台用户数量
-     */
-    @TableField("admin_count")
-    private Integer adminCount;
 
     /**
      * 创建时间
@@ -58,13 +34,28 @@ public class Role {
     private LocalDateTime createTime;
 
     /**
-     * 启用状态：0->禁用；1->启用
+     * 资源名称
      */
-    @TableField("status")
-    private Integer status;
+    @TableField("name")
+    private String name;
 
-    @TableField("sort")
-    private Integer sort;
+    /**
+     * 资源URL
+     */
+    @TableField("url")
+    private String url;
+
+    /**
+     * 描述
+     */
+    @TableField("description")
+    private String description;
+
+    /**
+     * 资源分类ID
+     */
+    @TableField("category_id")
+    private Long categoryId;
 
     /**
      * 更新时间

@@ -10,6 +10,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.judecodes.maildatasource.utils.PasswordUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 后台用户表 服务实现类
@@ -21,8 +23,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements AdminService {
 
+
+
+
     @Override
-    public Admin findByUsernameAndPassword(String username, String password) {
+    public Admin getByUsernameAndPassword(String username, String password) {
         Admin admin = this.lambdaQuery()
                 .eq(Admin::getUsername, username)
                 .one();
@@ -36,6 +41,17 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
             throw new AdminException(AdminErrorCode.ADMIN_PASSWD_CHECK_FAIL);
         }
         return admin;
+    }
+
+    @Override
+    public List<String> getRoleNameListByAdminId(Long adminId) {
+        return this.baseMapper.selectRoleNameListByAdminId(adminId);
+    }
+
+    @Override
+    public List<String> getPermissionNameListByAdminId(Long adminId) {
+        return this.baseMapper.selectPermissionNameListByAdminId(adminId);
+
     }
 
 

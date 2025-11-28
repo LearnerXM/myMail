@@ -1,16 +1,16 @@
 package com.judecodes.mailadmin.domain.service;
 
-import com.judecodes.mailadmin.domain.entity.Role;
+import com.judecodes.mailadmin.domain.entity.Resource;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * <p>
- * 后台用户角色表 服务类
+ * 后台资源表 服务类
  * </p>
  *
  * @author judecodes
  * @since 2025-11-28
  */
-public interface RoleService extends IService<Role> {
+public interface ResourceService extends IService<Resource> {
 
 }

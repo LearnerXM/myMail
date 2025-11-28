@@ -18,6 +18,8 @@ import com.judecodes.mailauth.param.LoginParam;
 import com.judecodes.mailauth.param.SmsLoginParam;
 import com.judecodes.mailauth.param.SmsRegisterParam;
 import com.judecodes.mailauth.vo.LoginVO;
+import com.judecodes.mailbase.constant.AuthConstant;
+import com.judecodes.mailbase.constant.UserType;
 import com.judecodes.mailbase.validator.Phone;
 import com.judecodes.mailweb.vo.Result;
 import jakarta.validation.Valid;
@@ -78,6 +80,7 @@ public class AuthController {
         StpUtil.login(memberInfo.getId(),new SaLoginModel().setIsLastingCookie(loginParam.getRememberMe())
                 .setTimeout(DEFAULT_LOGIN_SESSION_TIMEOUT));
         StpUtil.getSession().set(memberInfo.getId().toString(),memberInfo);
+        StpUtil.getSession().set(AuthConstant.STP_IDENTITY_TYPE, UserType.USER);
         LoginVO loginVO = new LoginVO(memberInfo);
         return Result.success(loginVO);
     }

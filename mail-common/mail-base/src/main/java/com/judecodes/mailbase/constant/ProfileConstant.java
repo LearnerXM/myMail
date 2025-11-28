@@ -1,6 +1,6 @@
 package com.judecodes.mailbase.constant;
 
-public class ProfileConstant {
+public interface ProfileConstant {
     public static final String DEV = "dev";
     public static final String PROD = "prod";
 }

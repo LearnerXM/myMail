@@ -1,9 +1,6 @@
 package com.judecodes.mailadmin.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.judecodes.maildatasource.entity.BaseEntity;
 import lombok.*;
 
@@ -24,7 +21,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @TableName("ums_admin")
 public class Admin extends BaseEntity {
-
 
 
     @TableField("username")

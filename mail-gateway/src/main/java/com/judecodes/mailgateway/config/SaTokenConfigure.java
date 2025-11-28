@@ -26,26 +26,43 @@ public class SaTokenConfigure {
     public SaReactorFilter getSaReactorFilter() {
         return new SaReactorFilter()
                 // 拦截地址
-                .addInclude("/**")    /* 拦截全部path */
-                // 开放地址
-                .addExclude("/favicon.ico","/auth/**","/doc/**","/goods/**")
-                // 鉴权方法：每次访问进入
+                .addInclude("/**")    // 拦截全部 path
+                // 全局放行地址（连 Sa-Filter 都不进）
+                .addExclude(
+                        "/favicon.ico",
+                        "/auth/**",
+                        "/doc/**",
+                        "/goods/**",
+                        "/v3/api-docs/**",
+                        "/swagger-ui/**",
+                        "/swagger-ui.html"
+                )
+                // 鉴权方法：每次请求都会进这里
                 .setAuth(obj -> {
                     log.info("网关鉴权生效");
-                    // 指定一条 match 规则
-                    SaRouter.match("/**",r -> StpUtil.checkLogin());   // 拦截的 path 列表，可以写多个 */
 
+                    // 1. 登录校验：除了开放接口 & 管理员登录接口，其他都要求已登录
+                    SaRouter.match("/**")
+                            .notMatch(
+                                    "/auth/**",
+                                    "/doc/**",
+                                    "/goods/**",
+                                    "/v3/api-docs/**",
+                                    "/swagger-ui/**",
+                                    "/swagger-ui.html",
+                                    "/admin/login"    // 管理员登录接口不需要已登录
+                            )
+                            .check(r -> StpUtil.checkLogin());
 
-                    //TODO 不同的管理员角色
+                    // 2. 角色校验：访问 /admin/** 需要 admin 角色，但登录接口除外
+                    SaRouter.match("/admin/**")
+                            .notMatch("/admin/login")
+                            .check(r -> StpUtil.checkRole("admin"));
 
-                    // 权限认证 -- 不同模块, 校验不同权限
-                    SaRouter.match("/admin/**", r -> StpUtil.checkRole("admin"));
-
-                    // 更多匹配 ...  */
+                    // TODO 其他模块的角色/权限可以继续在这里加
                 })
-                // 异常处理方法：每次setAuth函数出现异常时进入
-                .setError(this::getSaResult)
-                ;
+                // 异常处理方法：每次 setAuth 抛异常时进入
+                .setError(this::getSaResult);
     }
 
     private SaResult getSaResult(Throwable throwable) {
