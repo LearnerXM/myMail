@@ -7,11 +7,11 @@ public class PageRequest extends BaseRequest {
     /**
      * 当前页
      */
-    private int page;
+    private int currentPage;
     /**
      * 每页结果数
      */
-    private int size;
+    private int pageSize;
 
     private static final long serialVersionUID = 1L;
 }

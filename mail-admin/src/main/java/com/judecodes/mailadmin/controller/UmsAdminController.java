@@ -4,25 +4,26 @@ import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpUtil;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.judecodes.mailadmin.constant.AdminStateEnum;
 import com.judecodes.mailadmin.domain.entity.Admin;
 import com.judecodes.mailadmin.domain.service.AdminService;
 import com.judecodes.mailadmin.infrastructure.exception.AdminErrorCode;
 import com.judecodes.mailadmin.infrastructure.exception.AdminException;
-import com.judecodes.mailadmin.param.AdminLoginParam;
+import com.judecodes.mailadmin.param.*;
 
 
-import com.judecodes.mailadmin.param.AdminModifyPasswordParam;
-import com.judecodes.mailadmin.param.AdminRoleUpdateParam;
-import com.judecodes.mailadmin.param.CreateAdminParam;
 import com.judecodes.mailadmin.vo.*;
 import com.judecodes.mailbase.constant.AuthConstant;
 import com.judecodes.mailbase.constant.UserType;
+import com.judecodes.mailbase.dto.AdminDto;
+import com.judecodes.mailbase.exception.BizErrorCode;
+import com.judecodes.mailbase.exception.BizException;
+import com.judecodes.mailbase.response.PageResponse;
 import com.judecodes.mailweb.vo.PageResult;
 import com.judecodes.mailweb.vo.Result;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.web.bind.annotation.*;
@@ -55,11 +56,16 @@ public class UmsAdminController {
     @PostMapping("/login")
     public Result<AdminLoginVO> login(@Valid @RequestBody AdminLoginParam adminLoginParam) {
         Admin admin = adminService.getByUsernameAndPassword(adminLoginParam.getUsername(), adminLoginParam.getPassword());
-
+        List<String> roleNameList = adminService.getRoleNameListByAdminId(admin.getId());
         StpUtil.login(admin.getId(), new SaLoginModel().setIsLastingCookie(adminLoginParam.getRememberMe())
                 .setTimeout(DEFAULT_LOGIN_SESSION_TIMEOUT));
+        //构建Stp存储的管理员信息
+        AdminDto adminDto = new AdminDto();
+        adminDto.setId(admin.getId());
+        adminDto.setUsername(admin.getUsername());
+        adminDto.setRoleList(roleNameList);
 
-        StpUtil.getSession().set(admin.getId().toString(), admin);
+        StpUtil.getSession().set(AuthConstant.ADMIN_ROLE_INFO, adminDto);
         StpUtil.getSession().set(AuthConstant.STP_IDENTITY_TYPE, UserType.ADMIN);
 
         AdminLoginVO adminLoginVO = new AdminLoginVO(admin);
@@ -67,12 +73,12 @@ public class UmsAdminController {
     }
 
     @GetMapping("/info")
-    public Result<AdminInfo> getInfo() {
+    public Result<AdminInfoVO> getInfo() {
         String loginId = (String) StpUtil.getLoginId();
         Admin admin = adminService.findById(Long.parseLong(loginId));
         List<String> roleNameList = adminService.getRoleNameListByAdminId(Long.parseLong(loginId));
         List<String> permissionNameList = adminService.getPermissionNameListByAdminId(Long.parseLong(loginId));
-        AdminInfo adminInfo = new AdminInfo();
+        AdminInfoVO adminInfo = new AdminInfoVO();
         BeanUtil.copyProperties(admin, adminInfo);
         adminInfo.setRoleNamesList(roleNameList);
         adminInfo.setPermissionNameList(permissionNameList);
@@ -114,7 +120,7 @@ public class UmsAdminController {
     }
 
     @PostMapping("/updateStatus/{id}")
-    public Result<Boolean> updateStatus(@NotBlank @PathVariable Long id, @NotBlank @RequestParam Integer status) {
+    public Result<Boolean> updateStatus( @PathVariable Long id, @RequestParam Integer status) {
         if (status != AdminStateEnum.ENABLED.getCode() && status != AdminStateEnum.DISABLED.getCode()) {
             throw new AdminException(AdminErrorCode.ADMIN_STATUS_ERROR);
         }
@@ -123,24 +129,46 @@ public class UmsAdminController {
     }
 
     @PostMapping("/resetPassword/{id}")
-    public Result<Boolean> resetPassword(@NotBlank @PathVariable Long id) {
+    public Result<Boolean> resetPassword( @PathVariable Long id) {
+        if(ObjectUtil.isEmpty(id)){
+            throw new BizException(BizErrorCode.PARAMETER_ERROR);
+        }
         adminService.resetPassword(id);
         return Result.success(true);
     }
 
-    //TODO
+    //TODO 分页查询，待补充
     @GetMapping("/list")
-    public PageResult<AdminBasicInfo> getAdminList() {
-//        adminService.getAdminList();
-        return PageResult.success(null);
+    public PageResult<AdminBasicInfoVO> getAdminList(@RequestBody AdminListParam adminListParam) {
+        PageResponse<AdminBasicInfoVO> adminPageResponse = adminService.pageQueryByState(adminListParam.getKeyWord(),adminListParam.getState(), adminListParam.getCurrentPage(), adminListParam.getPageSize());
+
+        return PageResult.success(adminPageResponse);
+    }
+
+    @GetMapping("/getAdminBasicInfo/{id}")
+    public Result<AdminBasicInfoVO> getAdminBasicInfoById(@PathVariable Long id) {
+        if(ObjectUtil.isEmpty(id)){
+            throw new BizException(BizErrorCode.PARAMETER_ERROR);
+        }
+        Admin admin = adminService.findById(id);
+        AdminBasicInfoVO adminBasicInfo = new AdminBasicInfoVO();
+        BeanUtil.copyProperties(admin, adminBasicInfo);
+        return Result.success(adminBasicInfo);
     }
 
     @GetMapping("/getAdminInfo/{id}")
-    public Result<AdminBasicInfo> getAdminById(@PathVariable Long id) {
+    public Result<AdminInfoVO> getAdminById(@PathVariable Long id) {
+        if(ObjectUtil.isEmpty(id)){
+            throw new BizException(BizErrorCode.PARAMETER_ERROR);
+        }
         Admin admin = adminService.findById(id);
-        AdminBasicInfo adminBasicInfo = new AdminBasicInfo();
-        BeanUtil.copyProperties(admin, adminBasicInfo);
-        return Result.success(adminBasicInfo);
+        List<String> roleNameList = adminService.getRoleNameListByAdminId(id);
+        List<String> permissionNameList = adminService.getPermissionNameListByAdminId(id);
+        AdminInfoVO adminInfo = new AdminInfoVO();
+        BeanUtil.copyProperties(admin, adminInfo);
+        adminInfo.setRoleNamesList(roleNameList);
+        adminInfo.setPermissionNameList(permissionNameList);
+        return Result.success(adminInfo);
     }
 
     /* 1. 给管理员分配角色
@@ -159,8 +187,8 @@ public class UmsAdminController {
      */
     @GetMapping("/role/{adminId}")
 //    @SaCheckRole("SUPER_ADMIN")   // 或者：只允许自己查询自己，再看业务
-    public Result<List<RoleBasicInfo>> getAdminRoleList(@PathVariable Long adminId) {
-        List<RoleBasicInfo> roleList = adminService.getRoleListByAdminId(adminId);
+    public Result<List<RoleBasicInfoVO>> getAdminRoleList(@PathVariable Long adminId) {
+        List<RoleBasicInfoVO> roleList = adminService.getRoleListByAdminId(adminId);
         return Result.success(roleList);
     }
 
@@ -168,10 +196,11 @@ public class UmsAdminController {
      * 3. 查询管理员拥有的资源/权限
      * GET /admin/resource/{adminId}
      */
-    @GetMapping("/resource/{adminId}")
+//    @GetMapping("/resource/{adminId}")
 //    @SaCheckRole("SUPER_ADMIN")   // 同上，看你如何设计权限
-    public Result<List<ResourceBasicInfo>> getAdminResourceList(@PathVariable Long adminId) {
-        List<ResourceBasicInfo> resourceList = adminService.getResourceListByAdminId(adminId);
-        return Result.success(resourceList);
-    }
+//    public Result<List<ResourceBasicInfo>> getAdminResourceList(@PathVariable Long adminId) {
+//        List<ResourceBasicInfo> resourceList = adminService.getResourceListByAdminId(adminId);
+//        return Result.success(resourceList);
+//    }
+
 }

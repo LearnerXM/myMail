@@ -2,7 +2,7 @@ package com.judecodes.mailadmin.infrastructure.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.judecodes.mailadmin.domain.entity.Resource;
-import com.judecodes.mailadmin.vo.ResourceBasicInfo;
+import com.judecodes.mailadmin.vo.ResourceBasicInfoVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,5 +18,5 @@ import java.util.List;
  */
 @Mapper
 public interface ResourceMapper extends BaseMapper<Resource> {
-    List<ResourceBasicInfo> selectResourceListByAdminId(@Param("adminId") Long adminId);
+    List<ResourceBasicInfoVO> selectResourceListByAdminId(@Param("adminId") Long adminId);
 }

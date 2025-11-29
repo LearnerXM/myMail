@@ -3,9 +3,11 @@ package com.judecodes.mailadmin.domain.service;
 import com.judecodes.mailadmin.domain.entity.Admin;
 import com.baomidou.mybatisplus.extension.service.IService;
 
-import com.judecodes.mailadmin.vo.ResourceBasicInfo;
+import com.judecodes.mailadmin.vo.AdminBasicInfoVO;
+import com.judecodes.mailadmin.vo.ResourceBasicInfoVO;
 
-import com.judecodes.mailadmin.vo.RoleBasicInfo;
+import com.judecodes.mailadmin.vo.RoleBasicInfoVO;
+import com.judecodes.mailbase.response.PageResponse;
 
 
 import java.util.List;
@@ -39,14 +41,15 @@ public interface AdminService extends IService<Admin> {
 
     void resetPassword(Long id);
 
+    PageResponse<AdminBasicInfoVO> pageQueryByState(String keyWord, String state, int currentPage, int pageSize);
 
     // 分配角色
     void updateAdminRole(Long adminId, List<Long> roleIdList);
 
     // 查询管理员已有角色
-    List<RoleBasicInfo> getRoleListByAdminId(Long adminId);
+    List<RoleBasicInfoVO> getRoleListByAdminId(Long adminId);
 
     // 查询管理员拥有的资源/权限
-    List<ResourceBasicInfo> getResourceListByAdminId(Long adminId);
+    List<ResourceBasicInfoVO> getResourceListByAdminId(Long adminId);
 
 }

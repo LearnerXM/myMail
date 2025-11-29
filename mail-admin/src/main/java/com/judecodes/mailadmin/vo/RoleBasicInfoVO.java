@@ -1,16 +1,17 @@
 package com.judecodes.mailadmin.vo;
 
-
 import lombok.Data;
 
 @Data
-public class ResourceBasicInfo {
+public class RoleBasicInfoVO {
+
+
     private Long id;
 
+
     /**
-     * 资源名称
+     * 名称
      */
 
     private String name;
-
 }

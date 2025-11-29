@@ -10,6 +10,11 @@ public enum BizErrorCode implements ErrorCode {
      * HTTP 服务端错误
      */
     HTTP_SERVER_ERROR("HTTP_SERVER_ERROR", "HTTP 服务端错误"),
+    /**
+     * 参数异常
+     */
+    PARAMETER_ERROR("PARAMETER_ERROR", "参数异常"),
+
 
     /**
      * 不允许重复发送通知

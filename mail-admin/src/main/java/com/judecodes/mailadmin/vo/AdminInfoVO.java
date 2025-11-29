@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class AdminInfo implements Serializable {
+public class AdminInfoVO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

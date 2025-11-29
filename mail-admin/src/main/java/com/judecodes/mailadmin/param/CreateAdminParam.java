@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class CreateAdminParam {
     @NotEmpty
-    @Size(min = 6, max = 20, message = "账号长度必须在6-20位之间")
+    @Size(min = 5, max = 20, message = "账号长度必须在6-20位之间")
     private String username;
 
     @NotEmpty
@@ -24,24 +24,25 @@ public class CreateAdminParam {
     /**
      * 头像
      */
-
+    @NotEmpty
     private String icon;
 
     /**
      * 邮箱
      */
     @Email
+    @NotEmpty
     private String email;
 
     /**
      * 昵称
      */
-
+    @NotEmpty
     private String nickName;
 
     /**
      * 备注信息
      */
-
+    @NotEmpty
     private String note;
 }

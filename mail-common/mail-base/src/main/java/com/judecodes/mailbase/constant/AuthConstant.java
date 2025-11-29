@@ -7,7 +7,7 @@ public interface AuthConstant {
      */
     String STP_IDENTITY_TYPE = "identity-type";
 
-    String ADMIN_ROLE_LIST = "admin-role";
+    String ADMIN_ROLE_INFO = "admin-info";
 
     String ADMIN_PERMISSION_LIST = "admin-permission";
     /**

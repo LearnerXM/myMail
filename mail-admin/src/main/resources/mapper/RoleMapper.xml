@@ -21,7 +21,7 @@
     <sql id="Base_Column_List">
         id, role_code, name, description, admin_count, create_time, status, sort, update_time, deleted, lock_version
     </sql>
-    <select id="selectRoleListByAdminId" resultType="com.judecodes.mailadmin.vo.RoleBasicInfo">
+    <select id="selectRoleListByAdminId" resultType="com.judecodes.mailadmin.vo.RoleBasicInfoVO">
         SELECT ur.id, ur.name
         FROM ums_admin_role_relation as uarr
                  LEFT JOIN ums_role as ur on uarr.role_id = ur.id

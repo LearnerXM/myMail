@@ -16,10 +16,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.judecodes.mailadmin.infrastructure.mapper.ResourceMapper;
 import com.judecodes.mailadmin.infrastructure.mapper.RoleMapper;
 
-import com.judecodes.mailadmin.vo.ResourceBasicInfo;
+import com.judecodes.mailadmin.vo.AdminBasicInfoVO;
+import com.judecodes.mailadmin.vo.ResourceBasicInfoVO;
 
-import com.judecodes.mailadmin.vo.RoleBasicInfo;
+import com.judecodes.mailadmin.vo.RoleBasicInfoVO;
 
+import com.judecodes.mailbase.response.PageResponse;
 import com.judecodes.maildatasource.utils.PasswordUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -129,7 +131,9 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     @Override
     public void updateStatus(Long id, Integer status) {
         Admin admin = this.getById(id);
-        checkAdmin(admin);
+        if(admin == null){
+            throw new AdminException(AdminErrorCode.ADMIN_NOT_EXIST);
+        }
         admin.setStatus(status);
         boolean result = this.updateById(admin);
         if (!result) {
@@ -140,12 +144,20 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     @Override
     public void resetPassword(Long id) {
         Admin admin = this.getById(id);
-        checkAdmin(admin);
+        if(admin == null){
+            throw new AdminException(AdminErrorCode.ADMIN_NOT_EXIST);
+        }
         admin.setPassword(PasswordUtils.encode("admin123"));
         boolean result = this.updateById(admin);
         if (!result) {
             throw new AdminException(AdminErrorCode.ADMIN_RESET_PASSWORD_FAIL);
         }
+    }
+
+    @Override
+    public PageResponse<AdminBasicInfoVO> pageQueryByState(String keyWord, String state, int currentPage, int pageSize) {
+
+        return null;
     }
 
     @Override
@@ -171,13 +183,13 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     }
 
     @Override
-    public List<RoleBasicInfo> getRoleListByAdminId(Long adminId) {
+    public List<RoleBasicInfoVO> getRoleListByAdminId(Long adminId) {
 
         return roleMapper.selectRoleListByAdminId(adminId);
     }
 
     @Override
-    public List<ResourceBasicInfo> getResourceListByAdminId(Long adminId) {
+    public List<ResourceBasicInfoVO> getResourceListByAdminId(Long adminId) {
         return resourceMapper.selectResourceListByAdminId(adminId);
     }
 

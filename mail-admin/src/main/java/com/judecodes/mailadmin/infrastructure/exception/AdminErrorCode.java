@@ -37,7 +37,7 @@ public enum AdminErrorCode implements ErrorCode {
     /**
      * 管理员状态异常
      */
-    ADMIN_STATUS_ERROR("ADMIN_STATUS_ERROR","管理员状态异常"),
+    ADMIN_STATUS_ERROR("ADMIN_STATUS_ERROR","管理员状态错误"),
 
     /**
      * 管理员操作失败

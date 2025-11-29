@@ -3,7 +3,7 @@ package com.judecodes.mailadmin.vo;
 
 import java.time.LocalDateTime;
 
-public class ResourceInfo {
+public class ResourceInfoVO {
 
     private Long id;
 
