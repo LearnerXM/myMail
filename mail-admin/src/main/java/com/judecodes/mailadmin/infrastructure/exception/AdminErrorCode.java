@@ -21,6 +21,11 @@ public enum AdminErrorCode implements ErrorCode {
      * 管理员查询失败
      */
     ADMIN_QUERY_FAIL("ADMIN_QUERY_FAIL", "管理员查询失败"),
+
+    /**
+     * 管理员名已存在
+     */
+    ADMIN_USERNAME_EXIST("ADMIN_USERNAME_EXIST","管理员名已存在"),
     /**
      * 管理员修改管理员名失败
      */
@@ -38,6 +43,31 @@ public enum AdminErrorCode implements ErrorCode {
      * 管理员操作失败
      */
     ADMIN_OPERATE_FAILED("ADMIN_OPERATE_FAILED", "数据库操作异常，管理员操作失败"),
+
+    /**
+     * 管理员密码不一致
+     */
+    ADMIN_PASSWORD_NOT_MATCH("ADMIN_PASSWORD_NOT_MATCH", "两次输入的密码不一致"),
+
+    /**
+     * 管理员密码重复
+     */
+    ADMIN_PASSWORD_DUPLICATE("ADMIN_PASSWORD_DUPLICATE", "新密码与旧密码重复"),
+
+    /**
+     * 管理员创建失败
+     */
+    ADMIN_CREATE_FAIL("ADMIN_CREATE_FAIL", "管理员创建失败"),
+
+    /**
+     * 管理员更新状态失败
+     */
+    ADMIN_UPDATE_STATUS_FAIL("ADMIN_UPDATE_STATUS_FAIL", "管理员更新状态失败"),
+
+    /**
+     * 管理员重置密码失败
+     */
+    ADMIN_RESET_PASSWORD_FAIL("ADMIN_RESET_PASSWORD_FAIL", "管理员重置密码失败"),
 
     /**
      * 管理员密码校验失败

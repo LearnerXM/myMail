@@ -17,6 +17,7 @@ import com.judecodes.mailmember.param.ModifyPasswordParam;
 import com.judecodes.mailmember.param.VerifyCodeParam;
 import com.judecodes.mailweb.vo.Result;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -79,16 +80,15 @@ public class UmsMemberController {
     }
 
 
+    //TODO 修改用户名后，缓存删除
     @PostMapping("/modifyNickName")
-    public Result<Boolean> modifyNickName(String nickName){
+    public Result<Boolean> modifyNickName(@NotBlank String nickName) {
         String memberId = (String)StpUtil.getLoginId();
         Member member = memberService.findById(Long.parseLong(memberId) );
         if (member.getStatus()!= MemberStateEnum.ENABLED.getCode()){
             throw new MemberException(MemberErrorCode.USER_STATUS_ERROR);
         }
-        if (StringUtils.isBlank(nickName)){
-            throw new MemberException(MemberErrorCode.NICK_NAME_IS_NULL);
-        }
+
         memberService.modifyNickName(memberId,nickName);
         return Result.success(true);
     }

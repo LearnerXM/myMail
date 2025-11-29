@@ -19,5 +19,13 @@
     <sql id="Base_Column_List">
         id, create_time, name, url, description, category_id, update_time, deleted, lock_version
     </sql>
+    <select id="selectResourceListByAdminId" resultType="com.judecodes.mailadmin.vo.ResourceBasicInfo">
+        SELECT urr.id, urr.name
+        FROM ums_admin_role_relation as uarr
+                 LEFT JOIN ums_role as ur on uarr.role_id = ur.id
+                 LEFT JOIN ums_role_resource_relation as urrr on urrr.role_id = ur.id
+                 LEFT JOIN ums_resource as urr on urrr.resource_id = urr.id
+        WHERE uarr.admin_id = #{adminId}
+    </select>
 
 </mapper>

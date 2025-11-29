@@ -3,14 +3,13 @@ package com.judecodes.mailadmin.vo;
 
 import lombok.Data;
 
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
+
 
 @Data
-public class AdminInfo implements Serializable {
+public class AdminBasicInfo implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -43,7 +42,6 @@ public class AdminInfo implements Serializable {
     private String email;
 
 
-
     /**
      * 备注信息
      */
@@ -68,9 +66,5 @@ public class AdminInfo implements Serializable {
 
     private LocalDateTime createTime;
 
-
-    private List<String> roleNamesList;
-
-    private List<String> permissionNameList;
 
 }

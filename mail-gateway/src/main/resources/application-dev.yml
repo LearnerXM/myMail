@@ -19,7 +19,7 @@ spring:
         - id: mail-admin
           uri: lb://mail-admin          # Nacos 里的服务名
           predicates:
-            - Path=/admin/**            # 请求路径
+            - Path=/admin/**  , /mail-admin/**          # 请求路径
         - id: mail-auth
           uri: lb://mail-auth          # Nacos 里的服务名
           predicates:

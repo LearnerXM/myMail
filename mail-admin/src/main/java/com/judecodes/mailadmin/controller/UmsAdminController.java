@@ -3,18 +3,26 @@ package com.judecodes.mailadmin.controller;
 import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpUtil;
 
+import cn.hutool.core.bean.BeanUtil;
+import com.judecodes.mailadmin.constant.AdminStateEnum;
 import com.judecodes.mailadmin.domain.entity.Admin;
 import com.judecodes.mailadmin.domain.service.AdminService;
 import com.judecodes.mailadmin.infrastructure.exception.AdminErrorCode;
 import com.judecodes.mailadmin.infrastructure.exception.AdminException;
 import com.judecodes.mailadmin.param.AdminLoginParam;
 
-import com.judecodes.mailadmin.vo.AdminLoginVO;
+
+import com.judecodes.mailadmin.param.AdminModifyPasswordParam;
+import com.judecodes.mailadmin.param.AdminRoleUpdateParam;
+import com.judecodes.mailadmin.param.CreateAdminParam;
+import com.judecodes.mailadmin.vo.*;
 import com.judecodes.mailbase.constant.AuthConstant;
 import com.judecodes.mailbase.constant.UserType;
+import com.judecodes.mailweb.vo.PageResult;
 import com.judecodes.mailweb.vo.Result;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.web.bind.annotation.*;
@@ -38,8 +46,6 @@ public class UmsAdminController {
     private AdminService adminService;
 
 
-
-
     /**
      * 默认登录超时时间：7天
      */
@@ -48,27 +54,30 @@ public class UmsAdminController {
 
     @PostMapping("/login")
     public Result<AdminLoginVO> login(@Valid @RequestBody AdminLoginParam adminLoginParam) {
-        Admin admin=adminService.getByUsernameAndPassword(adminLoginParam.getUsername(),adminLoginParam.getPassword());
+        Admin admin = adminService.getByUsernameAndPassword(adminLoginParam.getUsername(), adminLoginParam.getPassword());
 
-        if (admin == null) {
-            throw new AdminException(AdminErrorCode.ADMIN_NOT_EXIST);
-        }
-        StpUtil.login(admin.getId(),new SaLoginModel().setIsLastingCookie(adminLoginParam.getRememberMe())
+        StpUtil.login(admin.getId(), new SaLoginModel().setIsLastingCookie(adminLoginParam.getRememberMe())
                 .setTimeout(DEFAULT_LOGIN_SESSION_TIMEOUT));
-        //获取权限和角色列表存到session
-        List<String>  roleList=adminService.getRoleNameListByAdminId(admin.getId());
-        List<String> permissionList=adminService.getPermissionNameListByAdminId(admin.getId());
 
-        StpUtil.getSession().set(admin.getId().toString(),admin);
+        StpUtil.getSession().set(admin.getId().toString(), admin);
         StpUtil.getSession().set(AuthConstant.STP_IDENTITY_TYPE, UserType.ADMIN);
-        StpUtil.getSession().set(AuthConstant.ADMIN_ROLE_LIST, roleList);
-        StpUtil.getSession().set(AuthConstant.ADMIN_PERMISSION_LIST, permissionList);
 
         AdminLoginVO adminLoginVO = new AdminLoginVO(admin);
         return Result.success(adminLoginVO);
     }
-//TODO 创建管理员账号
 
+    @GetMapping("/info")
+    public Result<AdminInfo> getInfo() {
+        String loginId = (String) StpUtil.getLoginId();
+        Admin admin = adminService.findById(Long.parseLong(loginId));
+        List<String> roleNameList = adminService.getRoleNameListByAdminId(Long.parseLong(loginId));
+        List<String> permissionNameList = adminService.getPermissionNameListByAdminId(Long.parseLong(loginId));
+        AdminInfo adminInfo = new AdminInfo();
+        BeanUtil.copyProperties(admin, adminInfo);
+        adminInfo.setRoleNamesList(roleNameList);
+        adminInfo.setPermissionNameList(permissionNameList);
+        return Result.success(adminInfo);
+    }
 
 
     @PostMapping("/logout")
@@ -77,7 +86,92 @@ public class UmsAdminController {
         return Result.success(true);
     }
 
+    @PostMapping("/modifyPassword")
+    public Result<Boolean> modifyPassword(@Valid @RequestBody AdminModifyPasswordParam adminModifyPasswordParam) {
 
+        String loginId = (String) StpUtil.getLoginId();
+        String oldPassword = adminModifyPasswordParam.getOldPassword();
+        String newPassword = adminModifyPasswordParam.getNewPassword();
+        String checkPassword = adminModifyPasswordParam.getCheckPassword();
 
+        if (!newPassword.equals(checkPassword)) {
+            throw new AdminException(AdminErrorCode.ADMIN_PASSWORD_NOT_MATCH);
+        }
 
+        adminService.modifyPassword(loginId, oldPassword, newPassword);
+
+        StpUtil.logout();
+        return Result.success(true);
+    }
+
+    //待测试
+    @PostMapping("/createAdmin")
+    public Result<Boolean> createAdmin(@Valid @RequestBody CreateAdminParam createAdminParam) {
+        Admin admin = new Admin();
+        BeanUtil.copyProperties(createAdminParam, admin);
+        adminService.createAdmin(admin);
+        return Result.success(true);
+    }
+
+    @PostMapping("/updateStatus/{id}")
+    public Result<Boolean> updateStatus(@NotBlank @PathVariable Long id, @NotBlank @RequestParam Integer status) {
+        if (status != AdminStateEnum.ENABLED.getCode() && status != AdminStateEnum.DISABLED.getCode()) {
+            throw new AdminException(AdminErrorCode.ADMIN_STATUS_ERROR);
+        }
+        adminService.updateStatus(id, status);
+        return Result.success(true);
+    }
+
+    @PostMapping("/resetPassword/{id}")
+    public Result<Boolean> resetPassword(@NotBlank @PathVariable Long id) {
+        adminService.resetPassword(id);
+        return Result.success(true);
+    }
+
+    //TODO
+    @GetMapping("/list")
+    public PageResult<AdminBasicInfo> getAdminList() {
+//        adminService.getAdminList();
+        return PageResult.success(null);
+    }
+
+    @GetMapping("/getAdminInfo/{id}")
+    public Result<AdminBasicInfo> getAdminById(@PathVariable Long id) {
+        Admin admin = adminService.findById(id);
+        AdminBasicInfo adminBasicInfo = new AdminBasicInfo();
+        BeanUtil.copyProperties(admin, adminBasicInfo);
+        return Result.success(adminBasicInfo);
+    }
+
+    /* 1. 给管理员分配角色
+     * POST /admin/role/update
+     */
+    @PostMapping("/role/update")
+//    @SaCheckRole("SUPER_ADMIN")   // 一般只有超级管理员能分配角色，按你自己权限设计调整
+    public Result<Boolean> updateAdminRole(@RequestBody @Valid AdminRoleUpdateParam request) {
+        adminService.updateAdminRole(request.getAdminId(), request.getRoleIdList());
+        return Result.success(true);
+    }
+
+    /**
+     * 2. 查询管理员已有角色
+     * GET /admin/role/{adminId}
+     */
+    @GetMapping("/role/{adminId}")
+//    @SaCheckRole("SUPER_ADMIN")   // 或者：只允许自己查询自己，再看业务
+    public Result<List<RoleBasicInfo>> getAdminRoleList(@PathVariable Long adminId) {
+        List<RoleBasicInfo> roleList = adminService.getRoleListByAdminId(adminId);
+        return Result.success(roleList);
+    }
+
+    /**
+     * 3. 查询管理员拥有的资源/权限
+     * GET /admin/resource/{adminId}
+     */
+    @GetMapping("/resource/{adminId}")
+//    @SaCheckRole("SUPER_ADMIN")   // 同上，看你如何设计权限
+    public Result<List<ResourceBasicInfo>> getAdminResourceList(@PathVariable Long adminId) {
+        List<ResourceBasicInfo> resourceList = adminService.getResourceListByAdminId(adminId);
+        return Result.success(resourceList);
+    }
 }

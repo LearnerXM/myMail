@@ -2,7 +2,12 @@ package com.judecodes.mailadmin.infrastructure.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.judecodes.mailadmin.domain.entity.Role;
+import com.judecodes.mailadmin.vo.RoleBasicInfo;
+
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -15,4 +20,6 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface RoleMapper extends BaseMapper<Role> {
 
+
+     List<RoleBasicInfo> selectRoleListByAdminId(@Param("adminId") Long adminId);
 }

@@ -5,9 +5,9 @@ import lombok.Getter;
 @Getter
 public enum AdminStateEnum {
     DISABLED(0, "禁用"),
-    ENABLED(1, "启用"),
-    LOCKED(2, "锁定"),
-    DELETED(3, "已删除");
+    ENABLED(1, "启用");
+//    LOCKED(2, "锁定"),
+//    DELETED(3, "已删除");
 
     private final int code;
     private final String desc;
