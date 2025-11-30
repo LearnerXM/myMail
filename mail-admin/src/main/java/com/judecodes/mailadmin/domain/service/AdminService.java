@@ -3,7 +3,7 @@ package com.judecodes.mailadmin.domain.service;
 import com.judecodes.mailadmin.domain.entity.Admin;
 import com.baomidou.mybatisplus.extension.service.IService;
 
-import com.judecodes.mailadmin.vo.AdminBasicInfoVO;
+
 import com.judecodes.mailadmin.vo.ResourceBasicInfoVO;
 
 import com.judecodes.mailadmin.vo.RoleBasicInfoVO;
@@ -41,7 +41,7 @@ public interface AdminService extends IService<Admin> {
 
     void resetPassword(Long id);
 
-    PageResponse<AdminBasicInfoVO> pageQueryByState(String keyWord, String state, int currentPage, int pageSize);
+    PageResponse<Admin> pageQueryByState(String keyWord,String nickName,String state, int currentPage, int pageSize);
 
     // 分配角色
     void updateAdminRole(Long adminId, List<Long> roleIdList);

@@ -56,9 +56,8 @@ public class SaTokenConfigure {
                             .check(r -> StpUtil.checkLogin());
 
                     // 2. 角色校验：访问 /admin/** 需要 admin 角色，但登录接口除外
-//                    SaRouter.match("/admin/**")
-//                            .notMatch("/admin/login")
-//                            .check(r -> StpUtil.checkRole("admin"));
+                    SaRouter.match("/superadmin/**")
+                            .check(r -> StpUtil.checkRole("超级管理员"));
 
                     // TODO 其他模块的角色/权限可以继续在这里加
                 })

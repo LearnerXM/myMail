@@ -4,6 +4,7 @@ package com.judecodes.mailadmin.domain.service.impl;
 import cn.hutool.core.collection.CollUtil;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.judecodes.mailadmin.constant.AdminStateEnum;
 import com.judecodes.mailadmin.domain.entity.Admin;
 import com.judecodes.mailadmin.domain.entity.AdminRoleRelation;
@@ -24,6 +25,8 @@ import com.judecodes.mailadmin.vo.RoleBasicInfoVO;
 import com.judecodes.mailbase.response.PageResponse;
 import com.judecodes.maildatasource.utils.PasswordUtils;
 import jakarta.annotation.Resource;
+import jodd.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -155,9 +158,17 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     }
 
     @Override
-    public PageResponse<AdminBasicInfoVO> pageQueryByState(String keyWord, String state, int currentPage, int pageSize) {
+    public PageResponse<Admin> pageQueryByState(String keyWord,String nickName, String state, int currentPage, int pageSize) {
+        Page<Admin> page = new Page<>(currentPage, pageSize);
 
-        return null;
+        LambdaQueryWrapper<Admin> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(StringUtils.isNotBlank(state), Admin::getStatus, state);
+        queryWrapper.like(StringUtils.isNotBlank(keyWord), Admin::getUsername, keyWord);
+        queryWrapper.like(StringUtils.isNotBlank(nickname), Admin::getNickName, nickname);
+        queryWrapper.orderBy(true, false, Admin::getCreateTime);
+        Page<Admin> adminPage = this.page(page, queryWrapper);
+
+        return PageResponse.of(adminPage.getRecords(), (int) adminPage.getCurrent(), (int) adminPage.getSize(), (int) adminPage.getTotal());
     }
 
     @Override
