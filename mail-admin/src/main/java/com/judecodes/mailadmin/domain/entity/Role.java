@@ -1,14 +1,13 @@
 package com.judecodes.mailadmin.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
-import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.annotation.TableField;
+
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.judecodes.maildatasource.entity.BaseEntity;
+import lombok.*;
+
+
 
 /**
  * <p>
@@ -21,11 +20,12 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor  // 这个很关键
+@NoArgsConstructor
 @TableName("ums_role")
-public class Role {
+public class Role extends BaseEntity {
 
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+
 
     /**
      * 角色编码，如 SUPER_ADMIN
@@ -51,11 +51,7 @@ public class Role {
     @TableField("admin_count")
     private Integer adminCount;
 
-    /**
-     * 创建时间
-     */
-    @TableField("create_time")
-    private LocalDateTime createTime;
+
 
     /**
      * 启用状态：0->禁用；1->启用
@@ -66,21 +62,4 @@ public class Role {
     @TableField("sort")
     private Integer sort;
 
-    /**
-     * 更新时间
-     */
-    @TableField("update_time")
-    private LocalDateTime updateTime;
-
-    /**
-     * 是否删除
-     */
-    @TableField("deleted")
-    private Boolean deleted;
-
-    /**
-     * 版本号
-     */
-    @TableField("lock_version")
-    private Integer lockVersion;
 }

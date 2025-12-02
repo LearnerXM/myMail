@@ -72,7 +72,45 @@ public enum AdminErrorCode implements ErrorCode {
     /**
      * 管理员密码校验失败
      */
-    ADMIN_PASSWD_CHECK_FAIL("ADMIN_PASSWD_CHECK_FAIL", "密码错误");
+    ADMIN_PASSWD_CHECK_FAIL("ADMIN_PASSWD_CHECK_FAIL", "密码错误"),
+    /**
+     * 角色已存在
+     */
+    ROLE_EXIST("ADMIN_EXIST", "角色已存在"),
+
+    /**
+     * 角色创建失败
+     */
+    ROLE_CREATE_FAIL("ROLE_CREATE_FAIL", "角色创建失败"),
+    /**
+     * 角色不存在
+     */
+
+    ROLE_NOT_EXIST("ROLE_NOT_EXIST", "角色不存在"),
+    /**
+     * 角色更新失败
+     */
+
+    ROLE_UPDATE_FAIL("ROLE_UPDATE_FAIL", "角色更新失败"),
+
+    /**
+     * 角色删除失败
+     */
+    ROLE_DELETE_FAIL("ROLE_DELETE_FAIL", "角色删除失败"),
+    /**
+     * 菜单删除失败
+     */
+    MENU_DELETE_FAIL("MENU_DELETE_FAIL","菜单删除失败"),
+    /**
+     * 资源删除失败
+     */
+    RESOURCE_DELETE_FAIL("RESOURCE_DELETE_FAIL","资源删除失败"),
+
+    /**
+     * 角色和管理员存在关联
+     */
+    ADMIN_ROLE_RELATION_EXIST("ADMIN_ROLE_RELATION_EXIST","角色和管理员存在关联")
+    ;
 
     private final String code;
 

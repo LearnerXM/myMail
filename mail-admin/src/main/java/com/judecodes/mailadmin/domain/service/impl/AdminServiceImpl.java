@@ -4,6 +4,7 @@ package com.judecodes.mailadmin.domain.service.impl;
 import cn.hutool.core.collection.CollUtil;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.judecodes.mailadmin.constant.AdminStateEnum;
 import com.judecodes.mailadmin.domain.entity.Admin;
@@ -17,7 +18,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.judecodes.mailadmin.infrastructure.mapper.ResourceMapper;
 import com.judecodes.mailadmin.infrastructure.mapper.RoleMapper;
 
-import com.judecodes.mailadmin.vo.AdminBasicInfoVO;
+
 import com.judecodes.mailadmin.vo.ResourceBasicInfoVO;
 
 import com.judecodes.mailadmin.vo.RoleBasicInfoVO;
@@ -25,7 +26,7 @@ import com.judecodes.mailadmin.vo.RoleBasicInfoVO;
 import com.judecodes.mailbase.response.PageResponse;
 import com.judecodes.maildatasource.utils.PasswordUtils;
 import jakarta.annotation.Resource;
-import jodd.util.StringUtil;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -118,6 +119,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     public void createAdmin(Admin admin) {
 
         String username = admin.getUsername();
+        //TODO selectOne底层查询的是列表，可能存在性能问题
         Admin excitedAdmin = this.lambdaQuery()
                 .eq(Admin::getUsername, username)
                 .one();
@@ -164,7 +166,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         LambdaQueryWrapper<Admin> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(StringUtils.isNotBlank(state), Admin::getStatus, state);
         queryWrapper.like(StringUtils.isNotBlank(keyWord), Admin::getUsername, keyWord);
-        queryWrapper.like(StringUtils.isNotBlank(nickname), Admin::getNickName, nickname);
+        queryWrapper.like(StringUtils.isNotBlank(nickName), Admin::getNickName, nickName);
         queryWrapper.orderBy(true, false, Admin::getCreateTime);
         Page<Admin> adminPage = this.page(page, queryWrapper);
 

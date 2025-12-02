@@ -18,7 +18,7 @@ import com.judecodes.mailbase.response.PageResponse;
 import com.judecodes.mailweb.vo.PageResult;
 import com.judecodes.mailweb.vo.Result;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,7 +60,11 @@ public class UmsSuperAdminController {
 
 
     @GetMapping("/list")
-    public PageResult<AdminBasicInfoVO> getAdminList(String username,String nickName,@NotBlank String state,  int currentPage, int pageSize) {
+    public PageResult<AdminBasicInfoVO> getAdminList(@RequestParam(required = false) String username,
+                                                     @RequestParam(required = false) String nickName,
+                                                     @RequestParam(required = false) String state,
+                                                     @RequestParam(defaultValue = "1") int currentPage,
+                                                     @RequestParam(defaultValue = "10") int pageSize) {
         PageResponse<Admin> adminPageResponse = adminService.pageQueryByState(username, nickName,state, currentPage,  pageSize);
         //列表转换
         if (adminPageResponse.getDatas()==null){
@@ -77,6 +81,7 @@ public class UmsSuperAdminController {
         return PageResult.successMulti(adminBasicInfoVOList, adminPageResponse.getTotal(), adminPageResponse.getCurrentPage(), adminPageResponse.getPageSize());
     }
 
+    @Deprecated
     @GetMapping("/getAdminBasicInfo/{id}")
     public Result<AdminBasicInfoVO> getAdminBasicInfoById(@PathVariable Long id) {
         if (ObjectUtil.isEmpty(id)) {
@@ -96,6 +101,7 @@ public class UmsSuperAdminController {
         Admin admin = adminService.findById(id);
         List<String> roleNameList = adminService.getRoleNameListByAdminId(id);
         List<String> permissionNameList = adminService.getPermissionNameListByAdminId(id);
+        //TODO 管理员菜单列表
         AdminInfoVO adminInfo = new AdminInfoVO();
         BeanUtil.copyProperties(admin, adminInfo);
         adminInfo.setRoleNamesList(roleNameList);
@@ -106,9 +112,9 @@ public class UmsSuperAdminController {
     /* 1. 给管理员分配角色
      * POST /admin/role/update
      */
-    @PostMapping("/role/update")
+    @PostMapping("/role/allocRole")
 //    @SaCheckRole("SUPER_ADMIN")   // 一般只有超级管理员能分配角色，按你自己权限设计调整
-    public Result<Boolean> updateAdminRole(@RequestBody @Valid AdminRoleUpdateParam request) {
+    public Result<Boolean> allocRole(@RequestBody @Valid AdminRoleUpdateParam request) {
         adminService.updateAdminRole(request.getAdminId(), request.getRoleIdList());
         return Result.success(true);
     }

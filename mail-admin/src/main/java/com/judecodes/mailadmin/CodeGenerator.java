@@ -52,7 +52,7 @@ public class CodeGenerator {
                 // 策略配置
                 .strategyConfig(builder -> builder
                         // 只生成 tz_user 表
-                        .addInclude("ums_role")
+                        .addInclude("ums_role_resource_relation")
                         // 去掉表前缀 tz_，生成的实体名会叫 User
                         .addTablePrefix("ums_")
 
